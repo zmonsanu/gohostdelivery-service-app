@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: preproduccion
+  datasource:
+    url: jdbc:postgresql://dpg-d6bnnq75r7bs73862i9g-a/gohostdelivery
+    username: gohost
+    password: 047cYU3lTR4CCOf8InYATq1ugaZcQaZw
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+logging:
+  level:
+    com.zms.gohostdeliveryservice: INFO
+    org.springframework.kafka: WARN
