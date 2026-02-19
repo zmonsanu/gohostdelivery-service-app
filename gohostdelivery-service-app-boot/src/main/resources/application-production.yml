@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: gohostdelivery-service-app-production
+server:
+  port: 8082
+logging:
+  level:
+    root: WARN

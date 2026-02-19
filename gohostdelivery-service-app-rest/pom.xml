@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.zms.gohostdeliveryservice</groupId>
+    <artifactId>gohostdelivery-service-app</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>gohostdelivery-service-app-rest</artifactId>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>REST module - controllers and REST mappers</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.zms.gohostdeliveryservice</groupId>
+      <artifactId>gohostdelivery-service-app-application</artifactId>
+    </dependency>
+    <!-- Spring Web -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!-- Validation -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <!-- Springdoc OpenAPI UI -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    </dependency>
+    <!-- Lombok + MapStruct -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+    </dependency>
+  </dependencies>
+</project>

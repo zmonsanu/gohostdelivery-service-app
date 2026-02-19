@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: gohostdelivery-service-app-staging
+server:
+  port: 8081
+logging:
+  level:
+    root: INFO

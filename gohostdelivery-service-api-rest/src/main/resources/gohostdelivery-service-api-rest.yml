@@ -1,0 +1,1193 @@
+openapi: 3.0.1
+info:
+  title: gohostdelivery API
+  version: 1.0.0
+  description: API para gestión de Riders, Companies, Documentos, Zonas de reparto y Pedidos en gohostdelivery.com
+
+servers:
+  - url: https://api.gohostdelivery.com
+    description: Producción
+  - url: https://sandbox.gohostdelivery.com
+    description: Sandbox
+  - url: http://localhost:8080
+    description: Local
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  ###############################################################
+  # RIDERS
+  ###############################################################
+
+  /riders:
+    post:
+      summary: Crear un nuevo Rider
+      operationId: createRider
+      tags: [Riders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderCreateRequest'
+      responses:
+        '201':
+          description: Rider creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rider'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      summary: Listar Riders
+      operationId: listRiders
+      tags: [Riders]
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /riders/{riderId}:
+    get:
+      summary: Obtener Rider por ID
+      operationId: getRiderById
+      tags: [Riders]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Rider encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rider'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  ###############################################################
+  # RIDER DOCUMENTS (FOTO, CONTRATO, DOCUMENTO IDENTIDAD)
+  ###############################################################
+
+  /riders/{riderId}/upload-photo:
+    post:
+      summary: Subir foto de perfil del Rider
+      description: |
+        Tamaño máximo permitido: **10 MB**.
+        Formatos permitidos: JPG, PNG.
+      operationId: uploadRiderPhoto
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        '201':
+          description: Foto subida correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderDocument'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /riders/{riderId}/upload-contract:
+    post:
+      summary: Subir contrato del Rider
+      description: |
+        Tamaño máximo permitido: **20 MB**.
+        Formatos permitidos: PDF, JPG, PNG.
+      operationId: uploadRiderContract
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        '201':
+          description: Contrato subido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderDocument'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /riders/{riderId}/upload-document:
+    post:
+      summary: Subir documento de identidad del Rider
+      description: |
+        Tamaño máximo permitido: **10 MB**.
+        Formatos permitidos: PDF, JPG, PNG.
+      operationId: uploadRiderIdentityDocument
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        '201':
+          description: Documento subido correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiderDocument'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /riders/{riderId}/documents/{documentId}:
+    delete:
+      summary: Eliminar documento de un Rider
+      operationId: deleteRiderDocument
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204': { description: Documento eliminado correctamente }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /riders/{riderId}/documents/{documentId}/download:
+    get:
+      summary: Descargar documento de un Rider
+      operationId: downloadRiderDocument
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Documento descargado correctamente
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  ###############################################################
+  # COMPANIES
+  ###############################################################
+
+  /companies:
+    post:
+      summary: Registrar una nueva Company (restaurante)
+      operationId: createCompany
+      tags: [Companies]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreateRequest'
+      responses:
+        '201':
+          description: Company creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    get:
+      summary: Listar Companies
+      operationId: listCompanies
+      tags: [Companies]
+      responses:
+        '200':
+          description: Lista de companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /companies/{companyId}:
+    get:
+      summary: Obtener Company por ID
+      operationId: getCompanyById
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Company encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    put:
+      summary: Actualizar Company
+      operationId: updateCompany
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreateRequest'
+      responses:
+        '200':
+          description: Company actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    delete:
+      summary: Eliminar Company
+      operationId: deleteCompany
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204': { description: Company eliminada correctamente }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /companies/{companyId}/riders:
+    post:
+      summary: Asociar un Rider favorito/preferente a una Company
+      operationId: addRiderPreference
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRiderPreferenceRequest'
+      responses:
+        '201':
+          description: Preferencia creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyRiderPreference'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    get:
+      summary: Listar Riders asociados a una Company
+      operationId: listRiderPreferencesByCompany
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de preferencias de riders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyRiderPreference'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /companies/{companyId}/riders/{riderId}:
+    delete:
+      summary: Eliminar preferencia de Rider de una Company
+      operationId: removeRiderPreference
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204': { description: Preferencia eliminada correctamente }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  ###############################################################
+  # ZONAS DE REPARTO
+  ###############################################################
+
+  /zones:
+    post:
+      summary: Crear una nueva zona de reparto
+      operationId: createZone
+      tags: [Zones]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZoneCreateRequest'
+      responses:
+        '201':
+          description: Zona creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    get:
+      summary: Listar zonas de reparto
+      operationId: listZones
+      tags: [Zones]
+      responses:
+        '200':
+          description: Lista de zonas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /zones/{zoneId}:
+    get:
+      summary: Obtener zona por ID
+      operationId: getZoneById
+      tags: [Zones]
+      parameters:
+        - name: zoneId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Zona encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    delete:
+      summary: Eliminar zona de reparto
+      operationId: deleteZone
+      tags: [Zones]
+      parameters:
+        - name: zoneId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204': { description: Zona eliminada correctamente }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /zones/by-company/{companyId}:
+    get:
+      summary: Listar zonas de reparto por Company
+      operationId: listZonesByCompany
+      tags: [Zones]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de zonas de la compañía
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  ###############################################################
+  # ORDERS (PEDIDOS)
+  ###############################################################
+
+  /orders:
+    post:
+      summary: Crear un nuevo pedido (se encola en Kafka)
+      operationId: createOrder
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+      responses:
+        '201':
+          description: Pedido creado y encolado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    get:
+      summary: Listar pedidos
+      operationId: listOrders
+      tags: [Orders]
+      parameters:
+        - name: companyId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: riderId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - name: estado
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /orders/{orderId}:
+    get:
+      summary: Obtener pedido por ID
+      operationId: getOrderById
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /orders/{orderId}/assign-rider:
+    put:
+      summary: Asignar un Rider a un pedido
+      operationId: assignRiderToOrder
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignRiderRequest'
+      responses:
+        '200':
+          description: Rider asignado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /orders/{orderId}/status:
+    put:
+      summary: Actualizar estado de un pedido
+      operationId: updateOrderStatus
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatusUpdateRequest'
+      responses:
+        '200':
+          description: Estado actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /orders/{orderId}/deliver:
+    put:
+      summary: Marcar pedido como entregado con geolocalización
+      operationId: deliverOrder
+      tags: [Orders]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDeliverRequest'
+      responses:
+        '200':
+          description: Pedido entregado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  ###############################################################
+  # CITIES
+  ###############################################################
+
+  /cities:
+    get:
+      summary: Listar ciudades
+      operationId: listCities
+      tags: [Cities]
+      responses:
+        '200':
+          description: Lista de ciudades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+###############################################################
+# COMPONENTS
+###############################################################
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    OK:
+      description: Successful operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SearchResponse'
+
+    BadRequest:
+      description: Bad request due to invalid parameters or malformed input.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Unauthorized request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  ###############################################################
+  # SCHEMAS
+  ###############################################################
+
+  schemas:
+
+    ###############################################################
+    # RIDER
+    ###############################################################
+
+    Rider:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        apellido:
+          type: string
+        docIdentidad:
+          type: string
+        direccion:
+          type: string
+        municipio:
+          type: string
+        provincia:
+          type: string
+        telefono:
+          type: string
+        email:
+          type: string
+          format: email
+        activo:
+          type: boolean
+      required:
+        - id
+        - nombre
+        - apellido
+        - docIdentidad
+        - direccion
+        - municipio
+        - provincia
+        - telefono
+        - email
+
+    RiderCreateRequest:
+      type: object
+      properties:
+        nombre: { type: string }
+        apellido: { type: string }
+        docIdentidad: { type: string }
+        direccion: { type: string }
+        municipio: { type: string }
+        provincia: { type: string }
+        telefono: { type: string }
+        email:
+          type: string
+          format: email
+      required:
+        - nombre
+        - apellido
+        - docIdentidad
+        - direccion
+        - municipio
+        - provincia
+        - telefono
+        - email
+
+    RiderDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        riderId:
+          type: string
+          format: uuid
+        tipoDocumento:
+          type: string
+          enum:
+            - PROFILE_PHOTO
+            - CONTRACT
+            - ID_DOCUMENT
+        nombreFichero:
+          type: string
+        contentType:
+          type: string
+        fechaSubida:
+          type: string
+          format: date-time
+      required:
+        - id
+        - riderId
+        - tipoDocumento
+        - nombreFichero
+        - contentType
+        - fechaSubida
+
+    ###############################################################
+    # COMPANY
+    ###############################################################
+
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombreComercial:
+          type: string
+        representanteLegal:
+          type: string
+        docIdentidad:
+          type: string
+        direccion:
+          type: string
+        municipio:
+          type: string
+        provincia:
+          type: string
+        telefono:
+          type: string
+        email:
+          type: string
+          format: email
+        web:
+          type: string
+          format: uri
+        activo:
+          type: boolean
+      required:
+        - id
+        - nombreComercial
+        - representanteLegal
+        - docIdentidad
+        - direccion
+        - municipio
+        - provincia
+        - telefono
+        - email
+
+    CompanyCreateRequest:
+      type: object
+      properties:
+        nombreComercial: { type: string }
+        representanteLegal: { type: string }
+        docIdentidad: { type: string }
+        direccion: { type: string }
+        municipio: { type: string }
+        provincia: { type: string }
+        telefono: { type: string }
+        email:
+          type: string
+          format: email
+        web:
+          type: string
+          format: uri
+      required:
+        - nombreComercial
+        - representanteLegal
+        - docIdentidad
+        - direccion
+        - municipio
+        - provincia
+        - telefono
+        - email
+
+    CompanyRiderPreference:
+      type: object
+      properties:
+        idPreference:
+          type: string
+          format: uuid
+        idCompany:
+          type: string
+          format: uuid
+        idRider:
+          type: string
+          format: uuid
+        tipoPreferencia:
+          type: string
+          enum:
+            - FAVORITO
+            - PREFERENTE
+        fechaAsignacion:
+          type: string
+          format: date-time
+      required:
+        - idPreference
+        - idCompany
+        - idRider
+        - tipoPreferencia
+        - fechaAsignacion
+
+    CompanyRiderPreferenceRequest:
+      type: object
+      properties:
+        idRider:
+          type: string
+          format: uuid
+        tipoPreferencia:
+          type: string
+          enum:
+            - FAVORITO
+            - PREFERENTE
+      required:
+        - idRider
+        - tipoPreferencia
+
+    ###############################################################
+    # ZONES
+    ###############################################################
+
+    Zone:
+      type: object
+      properties:
+        idZone:
+          type: string
+          format: uuid
+        idCompany:
+          type: string
+          format: uuid
+        idCity:
+          type: string
+          format: uuid
+        importeZonaCentro:
+          type: number
+          format: double
+        importeZonaPeriferica:
+          type: number
+          format: double
+      required:
+        - idZone
+        - idCompany
+        - idCity
+        - importeZonaCentro
+        - importeZonaPeriferica
+
+    ZoneCreateRequest:
+      type: object
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+        idCity:
+          type: string
+          format: uuid
+        importeZonaCentro:
+          type: number
+          format: double
+        importeZonaPeriferica:
+          type: number
+          format: double
+      required:
+        - idCompany
+        - idCity
+        - importeZonaCentro
+        - importeZonaPeriferica
+
+    ###############################################################
+    # ORDERS
+    ###############################################################
+
+    OrderStatus:
+      type: string
+      enum:
+        - RECIBIDO
+        - EN_PROCESO
+        - ENTREGADO
+
+    Order:
+      type: object
+      properties:
+        idPedido:
+          type: string
+          format: uuid
+        numeroPedido:
+          type: string
+        idCompany:
+          type: string
+          format: uuid
+        idZone:
+          type: string
+          format: uuid
+        idRider:
+          type: string
+          format: uuid
+        estado:
+          $ref: '#/components/schemas/OrderStatus'
+        fechaCreacion:
+          type: string
+          format: date-time
+        fechaEntrega:
+          type: string
+          format: date-time
+        lugarEntrega:
+          type: string
+          description: Coordenadas de entrega (ej. "28.1234,-15.4321")
+        pagado:
+          type: boolean
+      required:
+        - idPedido
+        - numeroPedido
+        - idCompany
+        - estado
+        - fechaCreacion
+        - pagado
+
+    OrderCreateRequest:
+      type: object
+      properties:
+        idCompany:
+          type: string
+          format: uuid
+        idZone:
+          type: string
+          format: uuid
+        numeroPedido:
+          type: string
+      required:
+        - idCompany
+        - numeroPedido
+
+    AssignRiderRequest:
+      type: object
+      properties:
+        idRider:
+          type: string
+          format: uuid
+      required:
+        - idRider
+
+    OrderStatusUpdateRequest:
+      type: object
+      properties:
+        estado:
+          $ref: '#/components/schemas/OrderStatus'
+      required:
+        - estado
+
+    OrderDeliverRequest:
+      type: object
+      properties:
+        lugarEntrega:
+          type: string
+          description: Coordenadas de entrega en formato "latitud,longitud" (ej. "28.1234,-15.4321")
+      required:
+        - lugarEntrega
+
+    ###############################################################
+    # CITY
+    ###############################################################
+
+    City:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        provincia:
+          type: string
+        comunidadAutonoma:
+          type: string
+      required:
+        - id
+        - nombre
+        - provincia
+        - comunidadAutonoma
+
+    ###############################################################
+    # RESPUESTAS GENERALES
+    ###############################################################
+
+    SearchResponse:
+      type: object
+      properties:
+        total: { type: integer }
+        items:
+          type: array
+          items:
+            type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        errorCode: { type: string }
+        message: { type: string }
+      required:
+        - errorCode
+        - message

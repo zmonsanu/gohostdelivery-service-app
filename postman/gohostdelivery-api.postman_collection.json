@@ -1,0 +1,613 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "gohostdelivery API",
+    "description": "API para gestión de Riders, Companies, Documentos, Zonas de reparto y Pedidos en gohostdelivery.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "riderId",
+      "value": "00000000-0000-0000-0000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "00000000-0000-0000-0000-000000000002",
+      "type": "string"
+    },
+    {
+      "key": "companyId",
+      "value": "00000000-0000-0000-0000-000000000003",
+      "type": "string"
+    },
+    {
+      "key": "zoneId",
+      "value": "00000000-0000-0000-0000-000000000004",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "00000000-0000-0000-0000-000000000005",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🏍️ Riders",
+      "item": [
+        {
+          "name": "Crear Rider",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/riders",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Pérez García\",\n  \"docIdentidad\": \"12345678A\",\n  \"direccion\": \"Calle Mayor, 10, 1ºA\",\n  \"municipio\": \"Madrid\",\n  \"provincia\": \"Madrid\",\n  \"telefono\": \"+34 600 123 456\",\n  \"email\": \"juan.perez@email.com\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "POST /riders - Crea un nuevo Rider. Responde 201 con el objeto Rider creado."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Riders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders"]
+            },
+            "description": "GET /riders - Devuelve la lista de todos los Riders."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Rider por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}"]
+            },
+            "description": "GET /riders/{riderId} - Obtiene un Rider por su UUID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📄 Rider Documents",
+      "item": [
+        {
+          "name": "Subir Foto de Perfil",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/upload-photo",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}", "upload-photo"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Imagen JPG o PNG. Máximo 10 MB."
+                }
+              ]
+            },
+            "description": "POST /riders/{riderId}/upload-photo - Sube la foto de perfil del Rider. Formatos: JPG, PNG. Máx: 10 MB."
+          },
+          "response": []
+        },
+        {
+          "name": "Subir Contrato",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/upload-contract",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}", "upload-contract"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "PDF, JPG o PNG. Máximo 20 MB."
+                }
+              ]
+            },
+            "description": "POST /riders/{riderId}/upload-contract - Sube el contrato del Rider. Formatos: PDF, JPG, PNG. Máx: 20 MB."
+          },
+          "response": []
+        },
+        {
+          "name": "Subir Documento de Identidad",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/upload-document",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}", "upload-document"]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "PDF, JPG o PNG. Máximo 10 MB."
+                }
+              ]
+            },
+            "description": "POST /riders/{riderId}/upload-document - Sube el documento de identidad del Rider. Formatos: PDF, JPG, PNG. Máx: 10 MB."
+          },
+          "response": []
+        },
+        {
+          "name": "Descargar Documento",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/documents/{{documentId}}/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}", "documents", "{{documentId}}", "download"]
+            },
+            "description": "GET /riders/{riderId}/documents/{documentId}/download - Descarga el fichero binario de un documento del Rider."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Documento",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/documents/{{documentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["riders", "{{riderId}}", "documents", "{{documentId}}"]
+            },
+            "description": "DELETE /riders/{riderId}/documents/{documentId} - Elimina un documento del Rider. Responde 204."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏢 Companies",
+      "item": [
+        {
+          "name": "Crear Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreComercial\": \"La Parrilla de Madrid\",\n  \"representanteLegal\": \"Carlos García López\",\n  \"docIdentidad\": \"12345678A\",\n  \"direccion\": \"Calle Gran Vía, 45, 2º Izquierda\",\n  \"municipio\": \"Madrid\",\n  \"provincia\": \"Madrid\",\n  \"telefono\": \"+34 910 123 456\",\n  \"email\": \"contacto@laparrillamadrid.com\",\n  \"web\": \"https://www.laparrillamadrid.com\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "POST /companies - Registra una nueva Company (restaurante). Responde 201 con el objeto Company creado."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            },
+            "description": "GET /companies - Devuelve la lista de todas las Companies."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Company por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            },
+            "description": "GET /companies/{companyId} - Obtiene una Company por su UUID."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreComercial\": \"La Parrilla de Madrid - Actualizado\",\n  \"representanteLegal\": \"Carlos García López\",\n  \"docIdentidad\": \"12345678A\",\n  \"direccion\": \"Calle Gran Vía, 45, 3º Derecha\",\n  \"municipio\": \"Madrid\",\n  \"provincia\": \"Madrid\",\n  \"telefono\": \"+34 910 999 888\",\n  \"email\": \"nuevo@laparrillamadrid.com\",\n  \"web\": \"https://www.laparrillamadrid.com\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "PUT /companies/{companyId} - Actualiza los datos de una Company existente."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Company",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            },
+            "description": "DELETE /companies/{companyId} - Elimina una Company. Responde 204."
+          },
+          "response": []
+        },
+        {
+          "name": "Asociar Rider a Company (Preferencia)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/riders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "riders"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRider\": \"{{riderId}}\",\n  \"tipoPreferencia\": \"FAVORITO\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "POST /companies/{companyId}/riders - Asocia un Rider como favorito o preferente a una Company. tipoPreferencia: FAVORITO | PREFERENTE."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Riders de una Company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/riders",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "riders"]
+            },
+            "description": "GET /companies/{companyId}/riders - Lista las preferencias de Riders asociados a la Company."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Preferencia de Rider",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/riders/{{riderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "riders", "{{riderId}}"]
+            },
+            "description": "DELETE /companies/{companyId}/riders/{riderId} - Elimina la preferencia de un Rider en una Company. Responde 204."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗺️ Zones",
+      "item": [
+        {
+          "name": "Crear Zona",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/zones",
+              "host": ["{{baseUrl}}"],
+              "path": ["zones"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCompany\": \"{{companyId}}\",\n  \"idCity\": \"00000000-0000-0000-0000-000000000010\",\n  \"importeZonaCentro\": 3.50,\n  \"importeZonaPeriferica\": 5.00\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "POST /zones - Crea una nueva zona de reparto asociada a una Company y una City."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Zonas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/zones",
+              "host": ["{{baseUrl}}"],
+              "path": ["zones"]
+            },
+            "description": "GET /zones - Devuelve la lista de todas las zonas de reparto."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Zona por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/zones/{{zoneId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["zones", "{{zoneId}}"]
+            },
+            "description": "GET /zones/{zoneId} - Obtiene una zona de reparto por su UUID."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Zonas por Company",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/zones/by-company/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["zones", "by-company", "{{companyId}}"]
+            },
+            "description": "GET /zones/by-company/{companyId} - Lista todas las zonas de reparto de una Company específica."
+          },
+          "response": []
+        },
+        {
+          "name": "Eliminar Zona",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/zones/{{zoneId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["zones", "{{zoneId}}"]
+            },
+            "description": "DELETE /zones/{zoneId} - Elimina una zona de reparto. Responde 204."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📦 Orders",
+      "item": [
+        {
+          "name": "Crear Pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCompany\": \"{{companyId}}\",\n  \"idZone\": \"{{zoneId}}\",\n  \"numeroPedido\": \"PED-2026-00001\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "POST /orders - Crea un nuevo pedido y lo encola en Kafka. idZone es opcional."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Pedidos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Filtrar por UUID de Company"
+                },
+                {
+                  "key": "riderId",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Filtrar por UUID de Rider"
+                },
+                {
+                  "key": "estado",
+                  "value": "RECIBIDO",
+                  "disabled": true,
+                  "description": "Filtrar por estado: RECIBIDO | EN_PROCESO | ENTREGADO"
+                }
+              ]
+            },
+            "description": "GET /orders - Lista pedidos. Admite filtros opcionales: companyId, riderId, estado."
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener Pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"]
+            },
+            "description": "GET /orders/{orderId} - Obtiene un pedido por su UUID."
+          },
+          "response": []
+        },
+        {
+          "name": "Asignar Rider a Pedido",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/assign-rider",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}", "assign-rider"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRider\": \"{{riderId}}\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "PUT /orders/{orderId}/assign-rider - Asigna un Rider a un pedido existente."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Estado de Pedido",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}", "status"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"EN_PROCESO\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "PUT /orders/{orderId}/status - Cambia el estado del pedido. Valores: RECIBIDO | EN_PROCESO | ENTREGADO."
+          },
+          "response": []
+        },
+        {
+          "name": "Marcar Pedido como Entregado",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}/deliver",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}", "deliver"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lugarEntrega\": \"40.416775,-3.703790\"\n}",
+              "options": {
+                "raw": { "language": "json" }
+              }
+            },
+            "description": "PUT /orders/{orderId}/deliver - Marca el pedido como entregado con coordenadas GPS (latitud,longitud)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏙️ Cities",
+      "item": [
+        {
+          "name": "Listar Ciudades",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cities",
+              "host": ["{{baseUrl}}"],
+              "path": ["cities"]
+            },
+            "description": "GET /cities - Devuelve la lista de todas las ciudades disponibles en el sistema."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

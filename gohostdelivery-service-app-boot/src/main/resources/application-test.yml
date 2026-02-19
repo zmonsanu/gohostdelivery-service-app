@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: gohostdelivery-service-app-test
+server:
+  port: 8084
+logging:
+  level:
+    root: DEBUG
