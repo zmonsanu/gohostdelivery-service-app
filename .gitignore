@@ -4,7 +4,7 @@
 *.war
 *.ear
 hs_err_pid*
-ECHO est  desactivado.
+
 # Maven
 target/
 pom.xml.tag
@@ -15,21 +15,21 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-ECHO est  desactivado.
+
 # IntelliJ
 .idea/
 *.iml
 *.ipr
 *.iws
-out/
-ECHO est  desactivado.
+/out/
+
 # VS Code
 .vscode/
-ECHO est  desactivado.
+
 # Logs
 *.log
 logs/
-ECHO est  desactivado.
+
 # OS files
 Thumbs.db
 .DS_Store
