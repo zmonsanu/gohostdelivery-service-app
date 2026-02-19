@@ -5,22 +5,13 @@ FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copiamos el POM raíz y los POMs de cada módulo primero (cache de dependencias)
-COPY pom.xml .
-COPY gohostdelivery-service-api-rest/pom.xml          gohostdelivery-service-api-rest/
-COPY gohostdelivery-service-app-domain/pom.xml        gohostdelivery-service-app-domain/
-COPY gohostdelivery-service-app-application/pom.xml   gohostdelivery-service-app-application/
-COPY gohostdelivery-service-app-infrastructure/pom.xml gohostdelivery-service-app-infrastructure/
-COPY gohostdelivery-service-app-rest/pom.xml          gohostdelivery-service-app-rest/
-COPY gohostdelivery-service-app-boot/pom.xml          gohostdelivery-service-app-boot/
-
-# Descargamos dependencias (aprovecha la caché de Docker si no cambian los POMs)
-RUN mvn dependency:go-offline -B
-
-# Copiamos el código fuente completo
+# Copiamos todo el código fuente de una vez.
+# En proyectos multi-módulo Maven los módulos internos no existen en repositorios
+# externos, por lo que NO se puede usar dependency:go-offline — Maven debe
+# compilarlos en orden según las dependencias declaradas en los pom.xml.
 COPY . .
 
-# Compilamos y empaquetamos saltando tests
+# Compilamos todos los módulos en orden y empaquetamos saltando tests
 RUN mvn clean package -DskipTests -B
 
 # ─────────────────────────────────────────
