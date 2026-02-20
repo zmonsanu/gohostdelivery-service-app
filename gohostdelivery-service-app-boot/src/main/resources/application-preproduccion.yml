@@ -3,9 +3,9 @@ spring:
     activate:
       on-profile: preproduccion
   datasource:
-    url: jdbc:postgresql://dpg-d6bnnq75r7bs73862i9g-a/gohostdelivery
-    username: gohost
-    password: 047cYU3lTR4CCOf8InYATq1ugaZcQaZw
+    url: jdbc:postgresql://db.cljvpenzjwrezehdsdul.supabase.co:5432/postgres?sslmode=require
+    username: postgres
+    password: WAqYUsVPaOY6qj5g
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
