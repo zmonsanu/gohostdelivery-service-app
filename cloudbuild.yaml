@@ -44,13 +44,18 @@ steps:
       # Variables de entorno inyectadas en Cloud Run
       - '--set-env-vars=SPRING_PROFILES_ACTIVE=preproduccion'
       - '--set-env-vars=CLOUD_SQL_CONNECTION_NAME=${PROJECT_ID}:${_REGION}:${_CLOUD_SQL_INSTANCE}'
+      # Kafka no disponible en Cloud Run → evita timeout de conexión al arrancar
+      - '--set-env-vars=KAFKA_BOOTSTRAP_SERVERS=localhost:9092'
       # DB_PASSWORD se gestiona como Secret en Secret Manager (más seguro)
       - '--set-secrets=DB_PASSWORD=gohost-db-password:latest'
       - '--port=8080'
-      - '--memory=512Mi'
+      - '--memory=768Mi'
       - '--cpu=1'
       - '--min-instances=0'
       - '--max-instances=3'
+      # Spring Boot + multi-módulo necesita más tiempo para arrancar
+      - '--startup-cpu-boost'
+      - '--timeout=300'
 
 # Imágenes que quedan almacenadas en Artifact Registry
 images:
