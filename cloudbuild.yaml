@@ -59,3 +59,5 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+  # En proyectos GCP nuevos Cloud Build usa la Compute Engine default SA
+  # en lugar de la SA dedicada PROJECT_NUMBER@cloudbuild.gserviceaccount.com
