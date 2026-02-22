@@ -58,6 +58,6 @@ images:
   - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:latest'
 
 options:
-  logging: LEGACY
-  # En proyectos GCP nuevos Cloud Build usa la Compute Engine default SA
-  # en lugar de la SA dedicada PROJECT_NUMBER@cloudbuild.gserviceaccount.com
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  # Compatible con service accounts personalizadas (Compute Engine SA)
+  # Logs visibles en Cloud Build console sin permisos extra de Cloud Logging
