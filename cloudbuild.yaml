@@ -1,0 +1,61 @@
+# Cloud Build CI/CD Pipeline
+# Se dispara automáticamente con cada push a la rama 'preproduccion'
+# Requiere conectar el repositorio de GitHub desde: Cloud Build > Triggers > Connect Repository
+
+substitutions:
+  _SERVICE_NAME: gohostdelivery-service     # Nombre del servicio en Cloud Run
+  _REGION: europe-west1                     # Región de Cloud Run (ajustar según tu instancia)
+  _CLOUD_SQL_INSTANCE: gohost-bd-pre        # Nombre de la instancia Cloud SQL
+
+steps:
+  # ── Paso 1: Build de la imagen Docker ──────────────────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:latest'
+      - '.'
+
+  # ── Paso 2: Push de la imagen a Artifact Registry ──────────────────────────
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}'
+
+  # ── Paso 3: Deploy en Cloud Run ────────────────────────────────────────────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-cloud-run'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:${SHORT_SHA}'
+      - '--region=${_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      # Conectar con Cloud SQL (sin abrir puertos, sin SSL manual)
+      - '--add-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_CLOUD_SQL_INSTANCE}'
+      # Variables de entorno inyectadas en Cloud Run
+      - '--set-env-vars=SPRING_PROFILES_ACTIVE=preproduccion'
+      - '--set-env-vars=CLOUD_SQL_CONNECTION_NAME=${PROJECT_ID}:${_REGION}:${_CLOUD_SQL_INSTANCE}'
+      # DB_PASSWORD se gestiona como Secret en Secret Manager (más seguro)
+      - '--set-secrets=DB_PASSWORD=gohost-db-password:latest'
+      - '--port=8080'
+      - '--memory=512Mi'
+      - '--cpu=1'
+      - '--min-instances=0'
+      - '--max-instances=3'
+
+# Imágenes que quedan almacenadas en Artifact Registry
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:${SHORT_SHA}'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/gohostdelivery/${_SERVICE_NAME}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

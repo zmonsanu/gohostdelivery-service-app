@@ -28,6 +28,11 @@
       <groupId>com.zms.gohostdeliveryservice</groupId>
       <artifactId>gohostdelivery-service-app-rest</artifactId>
     </dependency>
+    <!-- Google Cloud SQL Socket Factory: conexión segura a Cloud SQL sin SSL externo -->
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>postgres-socket-factory</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
