@@ -4,7 +4,7 @@
 
 substitutions:
   _SERVICE_NAME: gohostdelivery-service     # Nombre del servicio en Cloud Run
-  _REGION: europe-west1                     # Región de Cloud Run (ajustar según tu instancia)
+  _REGION: europe-southwest1                # Región donde está Cloud SQL gohost-bd-pre
   _CLOUD_SQL_INSTANCE: gohost-bd-pre        # Nombre de la instancia Cloud SQL
 
 steps:
