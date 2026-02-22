@@ -54,7 +54,7 @@ steps:
       - '--min-instances=0'
       - '--max-instances=3'
       # Spring Boot + multi-módulo necesita más tiempo para arrancar
-      - '--startup-cpu-boost'
+      - '--cpu-boost'
       - '--timeout=300'
 
 # Imágenes que quedan almacenadas en Artifact Registry
