@@ -5,6 +5,7 @@ import com.zms.gohostdeliveryservice.domain.exception.OrderNotFoundException;
 import com.zms.gohostdeliveryservice.domain.model.Order;
 import com.zms.gohostdeliveryservice.domain.model.enums.OrderStatus;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderRepository;
+import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class DeliverOrderCommandHandler {
 
     private final OrderRepository orderRepository;
+    private final PushNotificationPublisher pushNotificationPublisher;
 
     public OrderDto handle(DeliverOrderCommand command) {
         Order order = orderRepository.findById(command.getOrderId())
@@ -25,6 +27,9 @@ public class DeliverOrderCommandHandler {
         order.setLugarEntrega(command.getLugarEntrega());
 
         Order saved = orderRepository.save(order);
+
+        // Notificar a empresa y rider que el pedido fue entregado
+        pushNotificationPublisher.notifyOrderStatusChanged(saved);
 
         return toDto(saved);
     }

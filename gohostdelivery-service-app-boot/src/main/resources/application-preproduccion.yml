@@ -19,6 +19,16 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    stream:
+      defaultBinder: pubsub
+      bindings:
+        order-created-out-0:
+          destination: order-created        # Nombre del topic en Cloud Pub/Sub
+          content-type: application/json
+    gcp:
+      pubsub:
+        project-id: ${GOOGLE_CLOUD_PROJECT:project-1f43bc6d-114e-44c8-bf4}
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
@@ -29,4 +39,5 @@ spring:
 logging:
   level:
     com.zms.gohostdeliveryservice: INFO
+    org.springframework.cloud.stream: INFO
     org.springframework.kafka: WARN

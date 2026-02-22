@@ -23,6 +23,9 @@
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     <springdoc.version>2.3.0</springdoc.version>
     <cloud-sql-connector.version>1.20.0</cloud-sql-connector.version>
+    <spring-cloud.version>2024.0.0</spring-cloud.version>
+    <spring-cloud-gcp.version>5.8.0</spring-cloud-gcp.version>
+    <firebase-admin.version>9.4.0</firebase-admin.version>
   </properties>
 
   <modules>
@@ -82,11 +85,33 @@
         <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         <version>${springdoc.version}</version>
       </dependency>
-      <!-- Google Cloud SQL Socket Factory (conexión segura sin SSL externo) -->
+      <!-- Google Cloud SQL Socket Factory -->
       <dependency>
         <groupId>com.google.cloud.sql</groupId>
         <artifactId>postgres-socket-factory</artifactId>
         <version>${cloud-sql-connector.version}</version>
+      </dependency>
+      <!-- Firebase Admin SDK para FCM (notificaciones móviles) -->
+      <dependency>
+        <groupId>com.google.firebase</groupId>
+        <artifactId>firebase-admin</artifactId>
+        <version>${firebase-admin.version}</version>
+      </dependency>
+      <!-- Spring Cloud BOM: gestiona versiones de spring-cloud-stream y binders -->
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Spring Cloud GCP BOM: gestiona versiones del binder de Pub/Sub -->
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>spring-cloud-gcp-dependencies</artifactId>
+        <version>${spring-cloud-gcp.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
