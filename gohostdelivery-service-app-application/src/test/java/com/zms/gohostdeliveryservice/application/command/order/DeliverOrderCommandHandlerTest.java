@@ -5,6 +5,7 @@ import com.zms.gohostdeliveryservice.domain.exception.OrderNotFoundException;
 import com.zms.gohostdeliveryservice.domain.model.Order;
 import com.zms.gohostdeliveryservice.domain.model.enums.OrderStatus;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderRepository;
+import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,9 @@ class DeliverOrderCommandHandlerTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private PushNotificationPublisher pushNotificationPublisher;
 
     @InjectMocks
     private DeliverOrderCommandHandler handler;
@@ -76,6 +80,7 @@ class DeliverOrderCommandHandlerTest {
         assertThat(result.getEstado()).isEqualTo(OrderStatus.ENTREGADO);
         assertThat(result.getFechaEntrega()).isNotNull();
         assertThat(result.getLugarEntrega()).isEqualTo("Calle Mayor 5, Madrid");
+        verify(pushNotificationPublisher).notifyOrderStatusChanged(any(Order.class));
     }
 
     @Test
