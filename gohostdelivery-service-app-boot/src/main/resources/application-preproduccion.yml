@@ -31,6 +31,8 @@ spring:
           group: notification-service       # Subscription en GCP Pub/Sub
           content-type: application/json
     gcp:
+      sql:
+        enabled: false
       pubsub:
         project-id: ${GOOGLE_CLOUD_PROJECT:gohostdelivery-c060e}
   
