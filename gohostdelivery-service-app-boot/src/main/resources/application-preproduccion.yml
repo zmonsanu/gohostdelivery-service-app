@@ -14,7 +14,7 @@ spring:
       connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     show-sql: false
     properties:
       hibernate:
@@ -34,12 +34,13 @@ spring:
       sql:
         enabled: false
       pubsub:
-        project-id: ${GOOGLE_CLOUD_PROJECT:gohostdelivery-c060e}
+        project-id: ${GOOGLE_CLOUD_PROJECT}
   
   # Habilitamos Firebase para notificaciones push en preproducción
   gohost:
     fcm:
       enabled: true
+      project-id: gohostdelivery-c060e
 
 logging:
   level:

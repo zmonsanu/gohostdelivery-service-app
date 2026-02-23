@@ -14,16 +14,19 @@ import java.io.IOException;
  * Configuración de Firebase Admin SDK.
  *
  * En Cloud Run / GCP usa Application Default Credentials (ADC) automáticamente:
- *   → No necesita fichero de credenciales; usa la Service Account del contenedor.
+ * → No necesita fichero de credenciales; usa la Service Account del contenedor.
  *
  * En local, configura la variable de entorno:
- *   GOOGLE_APPLICATION_CREDENTIALS=/ruta/a/tu/firebase-service-account.json
- *   (descárgalo desde Firebase Console → Configuración → Cuentas de servicio)
+ * GOOGLE_APPLICATION_CREDENTIALS=/ruta/a/tu/firebase-service-account.json
+ * (descárgalo desde Firebase Console → Configuración → Cuentas de servicio)
  */
 @Slf4j
 @Configuration
 @ConditionalOnProperty(name = "gohost.fcm.enabled", havingValue = "true")
 public class FcmConfig {
+
+    @org.springframework.beans.factory.annotation.Value("${gohost.fcm.project-id:}")
+    private String projectId;
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
@@ -31,11 +34,14 @@ public class FcmConfig {
             return FirebaseApp.getInstance();
         }
 
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.getApplicationDefault())
-                .build();
+        FirebaseOptions.Builder optionsBuilder = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.getApplicationDefault());
 
-        FirebaseApp app = FirebaseApp.initializeApp(options);
+        if (projectId != null && !projectId.isEmpty()) {
+            optionsBuilder.setProjectId(projectId);
+        }
+
+        FirebaseApp app = FirebaseApp.initializeApp(optionsBuilder.build());
         log.info("Firebase Admin SDK inicializado correctamente");
         return app;
     }
