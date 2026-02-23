@@ -6,7 +6,7 @@ spring:
     # Cloud SQL Socket Factory: no necesita SSL manual ni IPs abiertas
     # CLOUD_SQL_CONNECTION_NAME formato: PROJECT_ID:REGION:gohost-bd-pre
     url: jdbc:postgresql:///postgres?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.postgres.SocketFactory
-    username: ${DB_USER:postgres}
+    username: ${DB_USER:gohost}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
