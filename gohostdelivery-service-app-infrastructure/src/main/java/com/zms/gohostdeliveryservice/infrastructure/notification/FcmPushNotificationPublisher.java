@@ -9,22 +9,17 @@ import com.zms.gohostdeliveryservice.domain.model.Order;
 import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementación de PushNotificationPublisher usando Firebase Cloud Messaging (FCM).
- *
- * Estrategia de notificaciones por tópicos FCM:
- *  - La app móvil se suscribe al tópico "company-{companyId}" al iniciar sesión.
- *  - El backend envía al tópico cuando ocurre un evento → no se necesita almacenar tokens.
- *
- * Tópicos utilizados:
- *  - "company-{companyId}"  → notifies the company app when an order is created/updated
- *  - "rider-{riderId}"      → notifies the assigned rider (cuando se asigne rider)
+ * Implementación FCM activa solo cuando gohost.fcm.enabled=true.
+ * En Cloud Run, configurar esta propiedad + habilitar Firebase en el proyecto GCP.
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "gohost.fcm.enabled", havingValue = "true")
 public class FcmPushNotificationPublisher implements PushNotificationPublisher {
 
     private final FirebaseApp firebaseApp;

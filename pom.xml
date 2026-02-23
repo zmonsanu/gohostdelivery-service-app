@@ -24,7 +24,7 @@
     <springdoc.version>2.3.0</springdoc.version>
     <cloud-sql-connector.version>1.20.0</cloud-sql-connector.version>
     <spring-cloud.version>2024.0.0</spring-cloud.version>
-    <spring-cloud-gcp.version>5.8.0</spring-cloud-gcp.version>
+    <spring-cloud-gcp.version>7.4.4</spring-cloud-gcp.version>
     <firebase-admin.version>9.4.0</firebase-admin.version>
   </properties>
 
@@ -112,6 +112,12 @@
         <version>${spring-cloud-gcp.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <!-- spring-cloud-gcp-pubsub-stream-binder version management -->
+      <dependency>
+        <groupId>com.google.cloud</groupId>
+        <artifactId>spring-cloud-gcp-pubsub-stream-binder</artifactId>
+        <version>${spring-cloud-gcp.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

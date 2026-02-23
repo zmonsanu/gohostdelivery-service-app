@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>spring-cloud-gcp-starter-stream-pubsub</artifactId>
+      <artifactId>spring-cloud-gcp-pubsub-stream-binder</artifactId>
     </dependency>
     <!-- Firebase Admin SDK para notificaciones push (FCM) -->
     <dependency>

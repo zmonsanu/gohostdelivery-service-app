@@ -9,9 +9,10 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementación binder-agnóstica de OrderEventPublisher usando Spring Cloud Stream StreamBridge.
- * - Perfil local  → binder Kafka   (spring-cloud-stream-binder-kafka)
- * - Perfil GCP    → binder Pub/Sub (spring-cloud-gcp-starter-stream-pubsub)
+ * Implementación binder-agnóstica de OrderEventPublisher usando Spring Cloud
+ * Stream StreamBridge.
+ * - Perfil local → binder Kafka (spring-cloud-stream-binder-kafka)
+ * - Perfil GCP → binder Pub/Sub (spring-cloud-gcp-pubsub-stream-binder)
  * Solo cambia la configuración en application-*.yml, el código no varía.
  */
 @Slf4j
@@ -31,8 +32,7 @@ public class StreamBridgeOrderEventPublisher implements OrderEventPublisher {
                         .withPayload(order)
                         .setHeader("orderId", order.getIdPedido().toString())
                         .setHeader("companyId", order.getIdCompany().toString())
-                        .build()
-        );
+                        .build());
 
         if (sent) {
             log.info("Evento order-created enviado [binding={}] pedido={}", ORDER_CREATED_BINDING, order.getIdPedido());
