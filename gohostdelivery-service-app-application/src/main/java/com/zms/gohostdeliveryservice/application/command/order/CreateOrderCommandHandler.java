@@ -7,7 +7,6 @@ import com.zms.gohostdeliveryservice.domain.model.enums.OrderStatus;
 import com.zms.gohostdeliveryservice.domain.port.out.CompanyRepository;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderEventPublisher;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderRepository;
-import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ public class CreateOrderCommandHandler {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final OrderEventPublisher orderEventPublisher;
-    private final PushNotificationPublisher pushNotificationPublisher;
 
     public OrderDto handle(CreateOrderCommand command) {
         companyRepository.findById(command.getIdCompany())
@@ -40,10 +38,9 @@ public class CreateOrderCommandHandler {
         Order saved = orderRepository.save(order);
 
         // Publicar evento en el bus de mensajes (Kafka local / Pub/Sub en GCP)
+        // El OrderEventConsumer escuchará este evento y enviará la notificación FCM
+        // asíncronamente
         orderEventPublisher.publishOrderCreated(saved);
-
-        // Enviar notificación push FCM a la app móvil de la empresa
-        pushNotificationPublisher.notifyOrderCreated(saved);
 
         return toDto(saved);
     }

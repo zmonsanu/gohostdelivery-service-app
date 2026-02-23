@@ -96,6 +96,12 @@
         <groupId>com.google.firebase</groupId>
         <artifactId>firebase-admin</artifactId>
         <version>${firebase-admin.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-junit-rule-no-dependencies</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- Spring Cloud BOM: gestiona versiones de spring-cloud-stream y binders -->
       <dependency>

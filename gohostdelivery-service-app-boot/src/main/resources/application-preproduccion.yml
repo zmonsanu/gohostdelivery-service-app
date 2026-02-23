@@ -24,17 +24,20 @@ spring:
       defaultBinder: pubsub
       bindings:
         order-created-out-0:
-          destination: order-created        # Nombre del topic en Cloud Pub/Sub
+          destination: order-created        # Topic de salida
+          content-type: application/json
+        orderCreatedConsumer-in-0:
+          destination: order-created        # Topic de entrada (mismo topic para encolar)
+          group: notification-service       # Subscription en GCP Pub/Sub
           content-type: application/json
     gcp:
       pubsub:
-        project-id: ${GOOGLE_CLOUD_PROJECT:project-1f43bc6d-114e-44c8-bf4}
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      retries: 1
-    listener:
-      missing-topics-fatal: false
+        project-id: ${GOOGLE_CLOUD_PROJECT:gohostdelivery-c060e}
+  
+  # Habilitamos Firebase para notificaciones push en preproducción
+  gohost:
+    fcm:
+      enabled: true
 
 logging:
   level:
