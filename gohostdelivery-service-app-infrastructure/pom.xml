@@ -43,6 +43,12 @@
     <dependency>
       <groupId>com.google.firebase</groupId>
       <artifactId>firebase-admin</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mock-server</groupId>
+          <artifactId>mockserver-junit-rule-no-dependencies</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Lombok + MapStruct -->
     <dependency>
