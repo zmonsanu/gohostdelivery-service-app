@@ -34,7 +34,7 @@ spring:
       sql:
         enabled: false
       pubsub:
-        project-id: ${GOOGLE_CLOUD_PROJECT}
+        # Spring Cloud GCP detectará el PROJECT_ID automáticamente en Cloud Run
   
   # Habilitamos Firebase para notificaciones push en preproducción
   gohost:
