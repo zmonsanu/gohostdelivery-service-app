@@ -1030,6 +1030,9 @@ components:
         importeZonaPeriferica:
           type: number
           format: double
+        descripcion:
+          type: string
+          maxLength: 500
       required:
         - idZone
         - idCompany
@@ -1052,6 +1055,9 @@ components:
         importeZonaPeriferica:
           type: number
           format: double
+        descripcion:
+          type: string
+          maxLength: 500
       required:
         - idCompany
         - idCity

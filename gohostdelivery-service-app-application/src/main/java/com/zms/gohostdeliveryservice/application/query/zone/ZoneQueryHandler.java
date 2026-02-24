@@ -42,6 +42,7 @@ public class ZoneQueryHandler {
                 .idCity(zone.getIdCity())
                 .importeZonaCentro(zone.getImporteZonaCentro())
                 .importeZonaPeriferica(zone.getImporteZonaPeriferica())
+                .descripcion(zone.getDescripcion())
                 .build();
     }
 }

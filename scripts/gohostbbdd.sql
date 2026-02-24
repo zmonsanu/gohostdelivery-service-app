@@ -125,7 +125,8 @@ CREATE TABLE IF NOT EXISTS zones (
     id_company UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
     id_city UUID NOT NULL REFERENCES cities(id),
     importe_zona_centro NUMERIC(10,2) NOT NULL,
-    importe_zona_periferica NUMERIC(10,2) NOT NULL
+    importe_zona_periferica NUMERIC(10,2) NOT NULL,
+    descripcion VARCHAR(500)
 );
 
 CREATE INDEX IF NOT EXISTS idx_zones_company ON zones(id_company);

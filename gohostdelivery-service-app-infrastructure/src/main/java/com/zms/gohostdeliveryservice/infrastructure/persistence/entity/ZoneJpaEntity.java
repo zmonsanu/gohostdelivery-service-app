@@ -32,4 +32,7 @@ public class ZoneJpaEntity {
 
     @Column(name = "importe_zona_periferica", nullable = false, precision = 10, scale = 2)
     private BigDecimal importeZonaPeriferica;
+
+    @Column(name = "descripcion", length = 500)
+    private String descripcion;
 }

@@ -54,6 +54,7 @@ public class ZoneRepositoryAdapter implements ZoneRepository {
                 .idCity(zone.getIdCity())
                 .importeZonaCentro(zone.getImporteZonaCentro())
                 .importeZonaPeriferica(zone.getImporteZonaPeriferica())
+                .descripcion(zone.getDescripcion())
                 .build();
     }
 
@@ -64,6 +65,7 @@ public class ZoneRepositoryAdapter implements ZoneRepository {
                 .idCity(entity.getIdCity())
                 .importeZonaCentro(entity.getImporteZonaCentro())
                 .importeZonaPeriferica(entity.getImporteZonaPeriferica())
+                .descripcion(entity.getDescripcion())
                 .build();
     }
 }

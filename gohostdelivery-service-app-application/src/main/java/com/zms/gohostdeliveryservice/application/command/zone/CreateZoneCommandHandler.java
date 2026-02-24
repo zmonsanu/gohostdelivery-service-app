@@ -14,29 +14,31 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CreateZoneCommandHandler {
 
-    private final ZoneRepository zoneRepository;
-    private final CompanyRepository companyRepository;
+        private final ZoneRepository zoneRepository;
+        private final CompanyRepository companyRepository;
 
-    public ZoneDto handle(CreateZoneCommand command) {
-        companyRepository.findById(command.getIdCompany())
-                .orElseThrow(() -> new CompanyNotFoundException(command.getIdCompany()));
+        public ZoneDto handle(CreateZoneCommand command) {
+                companyRepository.findById(command.getIdCompany())
+                                .orElseThrow(() -> new CompanyNotFoundException(command.getIdCompany()));
 
-        Zone zone = Zone.builder()
-                .idZone(UUID.randomUUID())
-                .idCompany(command.getIdCompany())
-                .idCity(command.getIdCity())
-                .importeZonaCentro(command.getImporteZonaCentro())
-                .importeZonaPeriferica(command.getImporteZonaPeriferica())
-                .build();
+                Zone zone = Zone.builder()
+                                .idZone(UUID.randomUUID())
+                                .idCompany(command.getIdCompany())
+                                .idCity(command.getIdCity())
+                                .importeZonaCentro(command.getImporteZonaCentro())
+                                .importeZonaPeriferica(command.getImporteZonaPeriferica())
+                                .descripcion(command.getDescripcion())
+                                .build();
 
-        Zone saved = zoneRepository.save(zone);
+                Zone saved = zoneRepository.save(zone);
 
-        return ZoneDto.builder()
-                .idZone(saved.getIdZone())
-                .idCompany(saved.getIdCompany())
-                .idCity(saved.getIdCity())
-                .importeZonaCentro(saved.getImporteZonaCentro())
-                .importeZonaPeriferica(saved.getImporteZonaPeriferica())
-                .build();
-    }
+                return ZoneDto.builder()
+                                .idZone(saved.getIdZone())
+                                .idCompany(saved.getIdCompany())
+                                .idCity(saved.getIdCity())
+                                .importeZonaCentro(saved.getImporteZonaCentro())
+                                .importeZonaPeriferica(saved.getImporteZonaPeriferica())
+                                .descripcion(saved.getDescripcion())
+                                .build();
+        }
 }

@@ -18,4 +18,5 @@ public class ZoneDto {
     private UUID idCity;
     private BigDecimal importeZonaCentro;
     private BigDecimal importeZonaPeriferica;
+    private String descripcion;
 }
