@@ -2,6 +2,9 @@ package com.zms.gohostdeliveryservice.rest.controller;
 
 import com.zms.gohostdeliveryservice.application.command.zone.CreateZoneCommand;
 import com.zms.gohostdeliveryservice.application.command.zone.CreateZoneCommandHandler;
+import com.zms.gohostdeliveryservice.application.command.zone.UpdateZoneCommand;
+import com.zms.gohostdeliveryservice.application.command.zone.UpdateZoneCommandHandler;
+import com.zms.gohostdeliveryservice.application.command.zone.DeleteZoneCommandHandler;
 import com.zms.gohostdeliveryservice.application.dto.ZoneDto;
 import com.zms.gohostdeliveryservice.application.query.zone.ZoneQueryHandler;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +21,26 @@ import java.util.UUID;
 public class ZoneController {
 
     private final CreateZoneCommandHandler createZoneCommandHandler;
+    private final UpdateZoneCommandHandler updateZoneCommandHandler;
+    private final DeleteZoneCommandHandler deleteZoneCommandHandler;
     private final ZoneQueryHandler zoneQueryHandler;
 
     @PostMapping
     public ResponseEntity<ZoneDto> createZone(@RequestBody CreateZoneCommand command) {
         ZoneDto dto = createZoneCommandHandler.handle(command);
         return ResponseEntity.created(URI.create("/zones/" + dto.getIdZone())).body(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ZoneDto> updateZone(@PathVariable UUID id, @RequestBody UpdateZoneCommand command) {
+        command.setIdZone(id);
+        return ResponseEntity.ok(updateZoneCommandHandler.handle(command));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteZone(@PathVariable UUID id) {
+        deleteZoneCommandHandler.handle(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")

@@ -513,6 +513,35 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/ServerError' }
 
+    put:
+      summary: Actualizar zona de reparto
+      operationId: updateZone
+      tags: [Zones]
+      parameters:
+        - name: zoneId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateZoneRequest'
+      responses:
+        '200':
+          description: Zona actualizada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Zone'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
     delete:
       summary: Eliminar zona de reparto
       operationId: deleteZone
@@ -1060,6 +1089,26 @@ components:
           maxLength: 500
       required:
         - idCompany
+        - idCity
+        - importeZonaCentro
+        - importeZonaPeriferica
+
+    UpdateZoneRequest:
+      type: object
+      properties:
+        idCity:
+          type: string
+          format: uuid
+        importeZonaCentro:
+          type: number
+          format: double
+        importeZonaPeriferica:
+          type: number
+          format: double
+        descripcion:
+          type: string
+          maxLength: 500
+      required:
         - idCity
         - importeZonaCentro
         - importeZonaPeriferica

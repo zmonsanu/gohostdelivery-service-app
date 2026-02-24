@@ -562,6 +562,39 @@
           "response": []
         },
         {
+          "name": "Actualizar Zona",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/zones/{{zoneId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "zones",
+                "{{zoneId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCity\": \"00000000-0000-0000-0000-000000000010\",\n  \"importeZonaCentro\": 4.00,\n  \"importeZonaPeriferica\": 6.50,\n  \"descripcion\": \"Zona centro histórico (Actualizada)\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "PUT /zones/{zoneId} - Actualiza una zona de reparto existente."
+          },
+          "response": []
+        },
+        {
           "name": "Eliminar Zona",
           "request": {
             "method": "DELETE",
