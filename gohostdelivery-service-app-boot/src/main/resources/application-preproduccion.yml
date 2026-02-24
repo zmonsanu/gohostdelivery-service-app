@@ -53,7 +53,7 @@ spring:
   gohost:
     fcm:
       enabled: true
-      project-id: gohostdelivery-c060e # Este lo dejamos para Firebase
+      project-id: project-1f43bc6d-114e-44c8-bf4 # Unified Firebase project ID
 
 logging:
   level:
