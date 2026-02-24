@@ -5,10 +5,10 @@ info:
   description: API para gestión de Riders, Companies, Documentos, Zonas de reparto y Pedidos en gohostdelivery.com
 
 servers:
+  - url: https://gohostdelivery-service-541341000706.europe-southwest1.run.app
+    description: Preproducción (Cloud Run)
   - url: https://api.gohostdelivery.com
     description: Producción
-  - url: https://sandbox.gohostdelivery.com
-    description: Sandbox
   - url: http://localhost:8080
     description: Local
 
