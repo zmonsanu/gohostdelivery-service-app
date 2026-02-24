@@ -117,9 +117,6 @@ paths:
   # RIDER DOCUMENTS (FOTO, CONTRATO, DOCUMENTO IDENTIDAD)
   ###############################################################
 
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '500': { $ref: '#/components/responses/ServerError' }
-
   /riders/{riderId}/documents:
     get:
       summary: Listar documentos de un Rider
