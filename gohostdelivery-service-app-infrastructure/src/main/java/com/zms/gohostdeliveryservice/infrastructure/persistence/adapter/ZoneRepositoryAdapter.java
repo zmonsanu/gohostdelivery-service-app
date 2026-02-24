@@ -37,7 +37,11 @@ public class ZoneRepositoryAdapter implements ZoneRepository {
 
     @Override
     public List<Zone> findByCompanyId(UUID companyId) {
-        return springDataZoneRepository.findByIdCompany(companyId).stream()
+        List<ZoneJpaEntity> entities = springDataZoneRepository.findByIdCompany(companyId);
+        if (entities == null) {
+            return java.util.Collections.emptyList();
+        }
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }

@@ -30,7 +30,11 @@ public class ZoneQueryHandler {
     }
 
     public List<ZoneDto> listByCompany(UUID companyId) {
-        return zoneRepository.findByCompanyId(companyId).stream()
+        List<Zone> zones = zoneRepository.findByCompanyId(companyId);
+        if (zones == null) {
+            return java.util.Collections.emptyList();
+        }
+        return zones.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }

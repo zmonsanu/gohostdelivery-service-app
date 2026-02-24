@@ -31,19 +31,28 @@ public class OrderQueryHandler {
     }
 
     public List<OrderDto> listByCompany(UUID companyId) {
-        return orderRepository.findByCompanyId(companyId).stream()
+        List<Order> orders = orderRepository.findByCompanyId(companyId);
+        if (orders == null)
+            return java.util.Collections.emptyList();
+        return orders.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<OrderDto> listByRider(UUID riderId) {
-        return orderRepository.findByRiderId(riderId).stream()
+        List<Order> orders = orderRepository.findByRiderId(riderId);
+        if (orders == null)
+            return java.util.Collections.emptyList();
+        return orders.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<OrderDto> listByEstado(OrderStatus estado) {
-        return orderRepository.findByEstado(estado).stream()
+        List<Order> orders = orderRepository.findByEstado(estado);
+        if (orders == null)
+            return java.util.Collections.emptyList();
+        return orders.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
     }

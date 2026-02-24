@@ -38,21 +38,30 @@ public class OrderRepositoryAdapter implements OrderRepository {
 
     @Override
     public List<Order> findByCompanyId(UUID companyId) {
-        return springDataOrderRepository.findByIdCompany(companyId).stream()
+        List<OrderJpaEntity> entities = springDataOrderRepository.findByIdCompany(companyId);
+        if (entities == null)
+            return java.util.Collections.emptyList();
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findByRiderId(UUID riderId) {
-        return springDataOrderRepository.findByIdRider(riderId).stream()
+        List<OrderJpaEntity> entities = springDataOrderRepository.findByIdRider(riderId);
+        if (entities == null)
+            return java.util.Collections.emptyList();
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Order> findByEstado(OrderStatus estado) {
-        return springDataOrderRepository.findByEstado(estado).stream()
+        List<OrderJpaEntity> entities = springDataOrderRepository.findByEstado(estado);
+        if (entities == null)
+            return java.util.Collections.emptyList();
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
