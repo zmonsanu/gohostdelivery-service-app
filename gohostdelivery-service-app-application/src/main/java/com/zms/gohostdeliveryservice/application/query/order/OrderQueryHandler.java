@@ -48,6 +48,13 @@ public class OrderQueryHandler {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderDto> listByFilters(UUID idCompany, UUID idRider, UUID idZone, OrderStatus estado,
+            java.time.LocalDateTime desde, java.time.LocalDateTime hasta) {
+        return orderRepository.findByFilters(idCompany, idRider, idZone, estado, desde, hasta).stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     private OrderDto toDto(Order order) {
         return OrderDto.builder()
                 .idPedido(order.getIdPedido())

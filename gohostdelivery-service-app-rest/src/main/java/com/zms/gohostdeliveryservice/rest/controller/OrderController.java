@@ -36,9 +36,16 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<OrderDto>> listOrders(
-            @RequestParam(required = false) OrderStatus estado) {
-        if (estado != null) {
-            return ResponseEntity.ok(orderQueryHandler.listByEstado(estado));
+            @RequestParam(required = false) OrderStatus estado,
+            @RequestParam(required = false) UUID companyId,
+            @RequestParam(required = false) UUID riderId,
+            @RequestParam(required = false) UUID zoneId,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime desde,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime hasta) {
+
+        if (estado != null || companyId != null || riderId != null || zoneId != null || desde != null
+                || hasta != null) {
+            return ResponseEntity.ok(orderQueryHandler.listByFilters(companyId, riderId, zoneId, estado, desde, hasta));
         }
         return ResponseEntity.ok(orderQueryHandler.listAll());
     }

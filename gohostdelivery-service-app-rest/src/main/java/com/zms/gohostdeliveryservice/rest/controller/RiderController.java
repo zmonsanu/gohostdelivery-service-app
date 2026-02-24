@@ -2,6 +2,8 @@ package com.zms.gohostdeliveryservice.rest.controller;
 
 import com.zms.gohostdeliveryservice.application.command.rider.CreateRiderCommand;
 import com.zms.gohostdeliveryservice.application.command.rider.CreateRiderCommandHandler;
+import com.zms.gohostdeliveryservice.application.command.rider.PartialUpdateRiderCommand;
+import com.zms.gohostdeliveryservice.application.command.rider.PartialUpdateRiderCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.document.DeleteRiderDocumentCommand;
 import com.zms.gohostdeliveryservice.application.command.document.DeleteRiderDocumentCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.document.UploadRiderDocumentCommand;
@@ -30,6 +32,7 @@ import java.util.UUID;
 public class RiderController {
 
     private final CreateRiderCommandHandler createRiderCommandHandler;
+    private final PartialUpdateRiderCommandHandler partialUpdateRiderCommandHandler;
     private final RiderQueryHandler riderQueryHandler;
     private final UploadRiderDocumentCommandHandler uploadRiderDocumentCommandHandler;
     private final DeleteRiderDocumentCommandHandler deleteRiderDocumentCommandHandler;
@@ -41,6 +44,13 @@ public class RiderController {
         return ResponseEntity.created(URI.create("/riders/" + dto.getId())).body(dto);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<RiderDto> updateRiderPartial(@PathVariable UUID id,
+            @RequestBody PartialUpdateRiderCommand command) {
+        command.setId(id);
+        return ResponseEntity.ok(partialUpdateRiderCommandHandler.handle(command));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RiderDto> getRider(@PathVariable UUID id) {
         return ResponseEntity.ok(riderQueryHandler.getById(id));
@@ -49,6 +59,11 @@ public class RiderController {
     @GetMapping
     public ResponseEntity<List<RiderDto>> listRiders() {
         return ResponseEntity.ok(riderQueryHandler.listAll());
+    }
+
+    @GetMapping("/{riderId}/documents")
+    public ResponseEntity<List<RiderDocumentDto>> listDocuments(@PathVariable UUID riderId) {
+        return ResponseEntity.ok(riderDocumentQueryHandler.listDocumentsByRider(riderId));
     }
 
     @PostMapping("/{riderId}/documents")

@@ -107,6 +107,39 @@
           "response": []
         },
         {
+          "name": "Actualizar Rider Parcial",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "riders",
+                "{{riderId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"+34 600 999 888\",\n  \"activo\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "PATCH /riders/{riderId} - Actualiza parcialmente los datos de un Rider."
+          },
+          "response": []
+        },
+        {
           "name": "Obtener Rider por ID",
           "request": {
             "method": "GET",
@@ -130,6 +163,26 @@
     {
       "name": "📄 Rider Documents",
       "item": [
+        {
+          "name": "Listar Documentos del Rider",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/riders/{{riderId}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "riders",
+                "{{riderId}}",
+                "documents"
+              ]
+            },
+            "description": "GET /riders/{riderId}/documents - Devuelve los metadatos de todos los documentos subidos por el Rider."
+          },
+          "response": []
+        },
         {
           "name": "Subir Foto de Perfil",
           "request": {
@@ -337,6 +390,39 @@
               ]
             },
             "description": "GET /companies/{companyId} - Obtiene una Company por su UUID."
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar Company Parcial",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "companies",
+                "{{companyId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"+34 910 888 777\",\n  \"web\": \"https://nueva-web.com\",\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "PATCH /companies/{companyId} - Actualiza parcialmente los datos de una Company."
           },
           "response": []
         },
@@ -677,14 +763,32 @@
                   "description": "Filtrar por UUID de Rider"
                 },
                 {
+                  "key": "zoneId",
+                  "value": "",
+                  "disabled": true,
+                  "description": "Filtrar por UUID de Zone"
+                },
+                {
                   "key": "estado",
                   "value": "RECIBIDO",
                   "disabled": true,
                   "description": "Filtrar por estado: RECIBIDO | EN_PROCESO | ENTREGADO"
+                },
+                {
+                  "key": "desde",
+                  "value": "2026-01-01T00:00:00",
+                  "disabled": true,
+                  "description": "Fecha inicio (ISO 8601)"
+                },
+                {
+                  "key": "hasta",
+                  "value": "2026-12-31T23:59:59",
+                  "disabled": true,
+                  "description": "Fecha fin (ISO 8601)"
                 }
               ]
             },
-            "description": "GET /orders - Lista pedidos. Admite filtros opcionales: companyId, riderId, estado."
+            "description": "GET /orders - Lista y filtra pedidos por Company, Rider, Zone, Estado y Rango de Fechas."
           },
           "response": []
         },

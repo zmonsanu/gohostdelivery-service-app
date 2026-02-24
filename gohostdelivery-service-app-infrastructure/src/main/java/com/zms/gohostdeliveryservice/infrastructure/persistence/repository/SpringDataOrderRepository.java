@@ -3,11 +3,13 @@ package com.zms.gohostdeliveryservice.infrastructure.persistence.repository;
 import com.zms.gohostdeliveryservice.domain.model.enums.OrderStatus;
 import com.zms.gohostdeliveryservice.infrastructure.persistence.entity.OrderJpaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface SpringDataOrderRepository extends JpaRepository<OrderJpaEntity, UUID> {
+public interface SpringDataOrderRepository
+        extends JpaRepository<OrderJpaEntity, UUID>, JpaSpecificationExecutor<OrderJpaEntity> {
     List<OrderJpaEntity> findByIdCompany(UUID idCompany);
 
     List<OrderJpaEntity> findByIdRider(UUID idRider);

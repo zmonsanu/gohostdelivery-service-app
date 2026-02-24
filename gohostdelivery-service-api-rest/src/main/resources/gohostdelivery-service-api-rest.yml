@@ -84,9 +84,66 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+    patch:
+      summary: Actualización parcial de un Rider
+      operationId: updateRiderPartial
+      tags: [Riders]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiderPatchRequest'
+      responses:
+        '200':
+          description: Rider actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rider'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
   ###############################################################
   # RIDER DOCUMENTS (FOTO, CONTRATO, DOCUMENTO IDENTIDAD)
   ###############################################################
+
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+  /riders/{riderId}/documents:
+    get:
+      summary: Listar documentos de un Rider
+      operationId: listRiderDocuments
+      tags: [RiderDocuments]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de documentos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RiderDocument'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
 
   /riders/{riderId}/upload-photo:
     post:
@@ -344,6 +401,34 @@ paths:
       responses:
         '200':
           description: Company actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
+    patch:
+      summary: Actualización parcial de una Company
+      operationId: updateCompanyPartial
+      tags: [Companies]
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyPatchRequest'
+      responses:
+        '200':
+          description: Company actualizada correctamente
           content:
             application/json:
               schema:
@@ -628,14 +713,34 @@ paths:
           schema:
             type: string
             format: uuid
+        - name: zoneId
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
         - name: estado
           in: query
           required: false
           schema:
             $ref: '#/components/schemas/OrderStatus'
+        - name: desde
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Fecha inicio (ISO 8601 ex. 2026-01-01T00:00:00)
+        - name: hasta
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Fecha fin (ISO 8601)
       responses:
         '200':
-          description: Lista de pedidos
+          description: Lista de pedidos filtrada
           content:
             application/json:
               schema:
@@ -895,6 +1000,33 @@ components:
         - provincia
         - telefono
         - email
+
+    CompanyPatchRequest:
+      type: object
+      properties:
+        nombreComercial: { type: string }
+        representanteLegal: { type: string }
+        docIdentidad: { type: string }
+        direccion: { type: string }
+        municipio: { type: string }
+        provincia: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        web: { type: string }
+        activo: { type: boolean }
+
+    RiderPatchRequest:
+      type: object
+      properties:
+        nombre: { type: string }
+        apellido: { type: string }
+        docIdentidad: { type: string }
+        direccion: { type: string }
+        municipio: { type: string }
+        provincia: { type: string }
+        telefono: { type: string }
+        email: { type: string }
+        activo: { type: boolean }
 
     RiderDocument:
       type: object

@@ -2,6 +2,8 @@ package com.zms.gohostdeliveryservice.rest.controller;
 
 import com.zms.gohostdeliveryservice.application.command.company.CreateCompanyCommand;
 import com.zms.gohostdeliveryservice.application.command.company.CreateCompanyCommandHandler;
+import com.zms.gohostdeliveryservice.application.command.company.PartialUpdateCompanyCommand;
+import com.zms.gohostdeliveryservice.application.command.company.PartialUpdateCompanyCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.preference.AddRiderPreferenceCommand;
 import com.zms.gohostdeliveryservice.application.command.preference.AddRiderPreferenceCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.preference.RemoveRiderPreferenceCommand;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class CompanyController {
 
     private final CreateCompanyCommandHandler createCompanyCommandHandler;
+    private final PartialUpdateCompanyCommandHandler partialUpdateCompanyCommandHandler;
     private final CompanyQueryHandler companyQueryHandler;
     private final AddRiderPreferenceCommandHandler addRiderPreferenceCommandHandler;
     private final RemoveRiderPreferenceCommandHandler removeRiderPreferenceCommandHandler;
@@ -31,6 +34,13 @@ public class CompanyController {
     public ResponseEntity<CompanyDto> createCompany(@RequestBody CreateCompanyCommand command) {
         CompanyDto dto = createCompanyCommandHandler.handle(command);
         return ResponseEntity.created(URI.create("/companies/" + dto.getId())).body(dto);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CompanyDto> updateCompanyPartial(@PathVariable UUID id,
+            @RequestBody PartialUpdateCompanyCommand command) {
+        command.setId(id);
+        return ResponseEntity.ok(partialUpdateCompanyCommandHandler.handle(command));
     }
 
     @GetMapping("/{id}")

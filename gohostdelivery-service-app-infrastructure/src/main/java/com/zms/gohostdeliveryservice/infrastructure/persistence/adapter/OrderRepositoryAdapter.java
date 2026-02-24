@@ -62,6 +62,33 @@ public class OrderRepositoryAdapter implements OrderRepository {
         return springDataOrderRepository.existsByNumeroPedido(numeroPedido);
     }
 
+    @Override
+    public List<Order> findByFilters(UUID idCompany, UUID idRider, UUID idZone, OrderStatus estado,
+            java.time.LocalDateTime fechaDesde, java.time.LocalDateTime fechaHasta) {
+        org.springframework.data.jpa.domain.Specification<OrderJpaEntity> spec = (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+
+            if (idCompany != null)
+                predicates.add(cb.equal(root.get("idCompany"), idCompany));
+            if (idRider != null)
+                predicates.add(cb.equal(root.get("idRider"), idRider));
+            if (idZone != null)
+                predicates.add(cb.equal(root.get("idZone"), idZone));
+            if (estado != null)
+                predicates.add(cb.equal(root.get("estado"), estado));
+            if (fechaDesde != null)
+                predicates.add(cb.greaterThanOrEqualTo(root.get("fechaCreacion"), fechaDesde));
+            if (fechaHasta != null)
+                predicates.add(cb.lessThanOrEqualTo(root.get("fechaCreacion"), fechaHasta));
+
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+
+        return springDataOrderRepository.findAll(spec).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private OrderJpaEntity toEntity(Order order) {
         return OrderJpaEntity.builder()
                 .idPedido(order.getIdPedido())

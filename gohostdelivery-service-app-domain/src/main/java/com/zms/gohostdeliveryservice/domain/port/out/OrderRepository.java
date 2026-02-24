@@ -20,5 +20,8 @@ public interface OrderRepository {
 
     List<Order> findByEstado(OrderStatus estado);
 
+    List<Order> findByFilters(UUID idCompany, UUID idRider, UUID idZone, OrderStatus estado,
+            java.time.LocalDateTime fechaDesde, java.time.LocalDateTime fechaHasta);
+
     boolean existsByNumeroPedido(String numeroPedido);
 }
