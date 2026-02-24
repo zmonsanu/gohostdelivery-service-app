@@ -22,6 +22,12 @@ spring:
   cloud:
     function:
       definition: orderCreatedConsumer
+    gcp:
+      project-id: gohostdelivery-c060e
+      sql:
+        enabled: false
+      pubsub:
+        enabled: true
     stream:
       defaultBinder: pubsub
       bindings:
@@ -32,11 +38,12 @@ spring:
           destination: order-created        # Topic de entrada (mismo topic para encolar)
           group: notification-service       # Subscription en GCP Pub/Sub
           content-type: application/json
-    gcp:
-      sql:
-        enabled: false
       pubsub:
-        # Spring Cloud GCP detectará el PROJECT_ID automáticamente en Cloud Run
+        default:
+          consumer:
+            auto-create-resources: false
+          producer:
+            auto-create-resources: false
   
   # Habilitamos Firebase para notificaciones push en preproducción
   gohost:
