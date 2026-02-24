@@ -53,7 +53,7 @@ public class ZoneController {
         return ResponseEntity.ok(zoneQueryHandler.listAll());
     }
 
-    @GetMapping("/company/{companyId}")
+    @GetMapping("/by-company/{companyId}")
     public ResponseEntity<List<ZoneDto>> listByCompany(@PathVariable UUID companyId) {
         return ResponseEntity.ok(zoneQueryHandler.listByCompany(companyId));
     }
