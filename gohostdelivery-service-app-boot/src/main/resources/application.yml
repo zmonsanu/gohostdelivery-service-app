@@ -3,12 +3,6 @@ spring:
     name: gohostdelivery-service
   profiles:
     active: local
-  cloud:
-    function:
-      definition: orderCreatedConsumer
-    stream:
-      function:
-        autobind: true
   jpa:
     hibernate:
       ddl-auto: validate

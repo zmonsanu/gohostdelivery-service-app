@@ -20,6 +20,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
+    function:
+      definition: orderCreatedConsumer
     stream:
       defaultBinder: pubsub
       bindings:
