@@ -3,8 +3,6 @@ spring:
     activate:
       on-profile: preproduccion
   datasource:
-    # Cloud SQL Socket Factory: no necesita SSL manual ni IPs abiertas
-    # CLOUD_SQL_CONNECTION_NAME formato: PROJECT_ID:REGION:gohost-bd-pre
     url: jdbc:postgresql:///postgres?cloudSqlInstance=${CLOUD_SQL_CONNECTION_NAME}&socketFactory=com.google.cloud.sql.postgres.SocketFactory
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD}
@@ -23,7 +21,7 @@ spring:
     function:
       definition: orderCreatedConsumer
     gcp:
-      project-id: gohostdelivery-c060e
+      # Eliminamos project-id fijo para que use el del entorno de Cloud Run
       sql:
         enabled: false
       pubsub:
@@ -32,11 +30,11 @@ spring:
       defaultBinder: pubsub
       bindings:
         order-created-out-0:
-          destination: order-created        # Topic de salida
+          destination: order-created
           content-type: application/json
         orderCreatedConsumer-in-0:
-          destination: order-created        # Topic de entrada (mismo topic para encolar)
-          group: notification-service       # Subscription en GCP Pub/Sub
+          destination: order-created
+          group: notification-service
           content-type: application/json
       pubsub:
         default:
@@ -44,12 +42,18 @@ spring:
             auto-create-resources: false
           producer:
             auto-create-resources: false
+        bindings:
+          orderCreatedConsumer-in-0:
+            consumer:
+              auto-create-resources: false
+          order-created-out-0:
+            producer:
+              auto-create-resources: false
   
-  # Habilitamos Firebase para notificaciones push en preproducción
   gohost:
     fcm:
       enabled: true
-      project-id: gohostdelivery-c060e
+      project-id: gohostdelivery-c060e # Este lo dejamos para Firebase
 
 logging:
   level:
