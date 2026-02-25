@@ -53,21 +53,21 @@ public class CompanyController {
         return ResponseEntity.ok(companyQueryHandler.listAll());
     }
 
-    @GetMapping("/{companyId}/preferences")
+    @GetMapping("/{companyId}/riders")
     public ResponseEntity<List<CompanyRiderPreferenceDto>> listPreferences(@PathVariable UUID companyId) {
         return ResponseEntity.ok(companyQueryHandler.listPreferencesByCompany(companyId));
     }
 
-    @PostMapping("/{companyId}/preferences")
+    @PostMapping("/{companyId}/riders")
     public ResponseEntity<CompanyRiderPreferenceDto> addPreference(
             @PathVariable UUID companyId,
             @RequestBody AddRiderPreferenceCommand command) {
         command.setCompanyId(companyId);
         CompanyRiderPreferenceDto dto = addRiderPreferenceCommandHandler.handle(command);
-        return ResponseEntity.created(URI.create("/companies/" + companyId + "/preferences")).body(dto);
+        return ResponseEntity.created(URI.create("/companies/" + companyId + "/riders")).body(dto);
     }
 
-    @DeleteMapping("/{companyId}/preferences/{riderId}")
+    @DeleteMapping("/{companyId}/riders/{riderId}")
     public ResponseEntity<Void> removePreference(
             @PathVariable UUID companyId,
             @PathVariable UUID riderId) {

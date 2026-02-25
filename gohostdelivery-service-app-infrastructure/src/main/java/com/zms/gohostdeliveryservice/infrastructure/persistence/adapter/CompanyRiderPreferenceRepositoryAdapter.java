@@ -39,7 +39,10 @@ public class CompanyRiderPreferenceRepositoryAdapter implements CompanyRiderPref
 
     @Override
     public List<CompanyRiderPreference> findByCompanyId(UUID companyId) {
-        return springDataRepository.findByIdCompany(companyId).stream()
+        List<CompanyRiderPreferenceJpaEntity> entities = springDataRepository.findByIdCompany(companyId);
+        if (entities == null)
+            return java.util.Collections.emptyList();
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }

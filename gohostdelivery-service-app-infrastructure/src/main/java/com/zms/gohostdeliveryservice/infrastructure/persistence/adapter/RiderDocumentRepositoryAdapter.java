@@ -68,7 +68,10 @@ public class RiderDocumentRepositoryAdapter implements RiderDocumentRepository {
 
     @Override
     public List<RiderDocument> findDocumentsByRiderId(UUID riderId) {
-        return documentRepository.findByRiderId(riderId).stream()
+        List<RiderDocumentJpaEntity> entities = documentRepository.findByRiderId(riderId);
+        if (entities == null)
+            return java.util.Collections.emptyList();
+        return entities.stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
