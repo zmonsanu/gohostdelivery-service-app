@@ -135,7 +135,7 @@ class OrderControllerTest {
         }
 
         @Test
-        @DisplayName("PATCH /orders/{orderId}/assign-rider → 200 OK cuando se asigna el rider")
+        @DisplayName("PUT /orders/{orderId}/assign-rider → 200 OK cuando se asigna el rider")
         void assignRider_returns200_whenAssignedSuccessfully() throws Exception {
                 UUID orderId = UUID.randomUUID();
                 UUID riderId = UUID.randomUUID();
@@ -156,7 +156,7 @@ class OrderControllerTest {
 
                 when(assignRiderToOrderCommandHandler.handle(any())).thenReturn(dto);
 
-                mockMvc.perform(patch("/orders/{orderId}/assign-rider", orderId)
+                mockMvc.perform(put("/orders/{orderId}/assign-rider", orderId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(command)))
                                 .andExpect(status().isOk())

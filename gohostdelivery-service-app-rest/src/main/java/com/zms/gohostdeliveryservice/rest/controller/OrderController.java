@@ -60,7 +60,7 @@ public class OrderController {
         return ResponseEntity.ok(orderQueryHandler.listByRider(riderId));
     }
 
-    @PatchMapping("/{orderId}/assign-rider")
+    @PutMapping("/{orderId}/assign-rider")
     public ResponseEntity<OrderDto> assignRider(
             @PathVariable UUID orderId,
             @RequestBody AssignRiderToOrderCommand command) {
@@ -68,7 +68,7 @@ public class OrderController {
         return ResponseEntity.ok(assignRiderToOrderCommandHandler.handle(command));
     }
 
-    @PatchMapping("/{orderId}/status")
+    @PutMapping("/{orderId}/status")
     public ResponseEntity<OrderDto> updateStatus(
             @PathVariable UUID orderId,
             @RequestBody UpdateOrderStatusCommand command) {
@@ -76,7 +76,7 @@ public class OrderController {
         return ResponseEntity.ok(updateOrderStatusCommandHandler.handle(command));
     }
 
-    @PatchMapping("/{orderId}/deliver")
+    @PutMapping("/{orderId}/deliver")
     public ResponseEntity<OrderDto> deliver(
             @PathVariable UUID orderId,
             @RequestBody DeliverOrderCommand command) {
