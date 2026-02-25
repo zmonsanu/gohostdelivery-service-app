@@ -2,9 +2,11 @@ package com.zms.gohostdeliveryservice.application.query.document;
 
 import com.zms.gohostdeliveryservice.application.dto.RiderDocumentDto;
 import com.zms.gohostdeliveryservice.domain.exception.RiderDocumentNotFoundException;
+import com.zms.gohostdeliveryservice.domain.exception.RiderNotFoundException;
 import com.zms.gohostdeliveryservice.domain.model.RiderDocument;
 import com.zms.gohostdeliveryservice.domain.model.RiderDocumentBlob;
 import com.zms.gohostdeliveryservice.domain.port.out.RiderDocumentRepository;
+import com.zms.gohostdeliveryservice.domain.port.out.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +19,11 @@ import java.util.stream.Collectors;
 public class RiderDocumentQueryHandler {
 
     private final RiderDocumentRepository riderDocumentRepository;
+    private final RiderRepository riderRepository;
 
     public List<RiderDocumentDto> listDocumentsByRider(UUID riderId) {
+        riderRepository.findById(riderId)
+                .orElseThrow(() -> new RiderNotFoundException(riderId));
         return riderDocumentRepository.findDocumentsByRiderId(riderId).stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
