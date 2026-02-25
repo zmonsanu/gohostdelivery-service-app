@@ -50,10 +50,10 @@ spring:
             producer:
               auto-create-resources: false
   
-  gohost:
-    fcm:
-      enabled: true
-      project-id: project-1f43bc6d-114e-44c8-bf4 # Unified Firebase project ID
+gohost:
+  fcm:
+    enabled: true
+    project-id: project-1f43bc6d-114e-44c8-bf4 # Unified Firebase project ID
 
 logging:
   level:
