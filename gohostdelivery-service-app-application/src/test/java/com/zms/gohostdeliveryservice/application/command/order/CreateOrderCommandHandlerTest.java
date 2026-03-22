@@ -8,7 +8,6 @@ import com.zms.gohostdeliveryservice.domain.model.enums.OrderStatus;
 import com.zms.gohostdeliveryservice.domain.port.out.CompanyRepository;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderEventPublisher;
 import com.zms.gohostdeliveryservice.domain.port.out.OrderRepository;
-import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +37,7 @@ class CreateOrderCommandHandlerTest {
     @Mock
     private OrderEventPublisher orderEventPublisher;
 
-    @Mock
-    private PushNotificationPublisher pushNotificationPublisher;
+
 
     @InjectMocks
     private CreateOrderCommandHandler handler;
@@ -96,7 +94,6 @@ class CreateOrderCommandHandlerTest {
         assertThat(result.getPagado()).isFalse();
         verify(orderRepository).save(any(Order.class));
         verify(orderEventPublisher).publishOrderCreated(any(Order.class));
-        verify(pushNotificationPublisher).notifyOrderCreated(any(Order.class));
     }
 
     @Test
@@ -113,8 +110,8 @@ class CreateOrderCommandHandlerTest {
     }
 
     @Test
-    @DisplayName("handle() publica evento y notificación FCM tras guardar el pedido")
-    void handle_publishesEventAndNotification_afterSavingOrder() {
+    @DisplayName("handle() publica evento tras guardar el pedido")
+    void handle_publishesEvent_afterSavingOrder() {
         Order savedOrder = Order.builder()
                 .idPedido(UUID.randomUUID())
                 .numeroPedido(command.getNumeroPedido())
@@ -130,6 +127,5 @@ class CreateOrderCommandHandlerTest {
         handler.handle(command);
 
         verify(orderEventPublisher, times(1)).publishOrderCreated(savedOrder);
-        verify(pushNotificationPublisher, times(1)).notifyOrderCreated(savedOrder);
     }
 }

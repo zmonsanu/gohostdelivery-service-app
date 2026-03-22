@@ -7,10 +7,14 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.zms.gohostdeliveryservice.domain.model.Order;
 import com.zms.gohostdeliveryservice.domain.port.out.PushNotificationPublisher;
+import com.zms.gohostdeliveryservice.domain.port.out.ZoneRiderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Implementación FCM activa solo cuando gohost.fcm.enabled=true.
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Component;
 public class FcmPushNotificationPublisher implements PushNotificationPublisher {
 
     private final FirebaseApp firebaseApp;
+    private final ZoneRiderRepository zoneRiderRepository;
 
     @Override
     public void notifyOrderCreated(Order order) {
@@ -42,6 +47,27 @@ public class FcmPushNotificationPublisher implements PushNotificationPublisher {
                 .build();
 
         sendMessage(message, topic);
+
+        if (order.getIdZone() != null) {
+            List<UUID> riders = zoneRiderRepository.findRidersByZoneId(order.getIdZone());
+            for (UUID riderId : riders) {
+                String riderTopic = "rider-" + riderId;
+                Message riderMessage = Message.builder()
+                        .setTopic(riderTopic)
+                        .setNotification(Notification.builder()
+                                .setTitle("📦 Nuevo pedido recibido en tu zona")
+                                .setBody("Pedido #" + order.getNumeroPedido() + " ha sido creado")
+                                .build())
+                        .putData("type", "ORDER_CREATED")
+                        .putData("orderId", order.getIdPedido().toString())
+                        .putData("numeroPedido", order.getNumeroPedido())
+                        .putData("estado", order.getEstado().toString())
+                        .putData("companyId", order.getIdCompany().toString())
+                        .build();
+
+                sendMessage(riderMessage, riderTopic);
+            }
+        }
     }
 
     @Override

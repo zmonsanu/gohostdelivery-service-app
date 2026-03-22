@@ -1,11 +1,16 @@
 package com.zms.gohostdeliveryservice.application.query.zone;
 
 import com.zms.gohostdeliveryservice.application.dto.ZoneDto;
+import com.zms.gohostdeliveryservice.application.dto.RiderDto;
 import com.zms.gohostdeliveryservice.domain.exception.ZoneNotFoundException;
 import com.zms.gohostdeliveryservice.domain.model.Zone;
+import com.zms.gohostdeliveryservice.domain.model.Rider;
 import com.zms.gohostdeliveryservice.domain.port.out.ZoneRepository;
+import com.zms.gohostdeliveryservice.domain.port.out.ZoneRiderRepository;
+import com.zms.gohostdeliveryservice.domain.port.out.RiderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +21,8 @@ import java.util.stream.Collectors;
 public class ZoneQueryHandler {
 
     private final ZoneRepository zoneRepository;
+    private final ZoneRiderRepository zoneRiderRepository;
+    private final RiderRepository riderRepository;
 
     public ZoneDto getById(UUID id) {
         Zone zone = zoneRepository.findById(id)
@@ -47,6 +54,34 @@ public class ZoneQueryHandler {
                 .importeZonaCentro(zone.getImporteZonaCentro())
                 .importeZonaPeriferica(zone.getImporteZonaPeriferica())
                 .descripcion(zone.getDescripcion())
+                .build();
+    }
+
+    public List<RiderDto> getRidersByZone(UUID zoneId) {
+        zoneRepository.findById(zoneId)
+                .orElseThrow(() -> new ZoneNotFoundException(zoneId));
+
+        List<UUID> riderIds = zoneRiderRepository.findRidersByZoneId(zoneId);
+        
+        return riderIds.stream()
+                .map(riderRepository::findById)
+                .flatMap(Optional::stream)
+                .map(this::toRiderDto)
+                .collect(Collectors.toList());
+    }
+
+    private RiderDto toRiderDto(Rider rider) {
+        return RiderDto.builder()
+                .id(rider.getId())
+                .nombre(rider.getNombre())
+                .apellido(rider.getApellido())
+                .docIdentidad(rider.getDocIdentidad())
+                .direccion(rider.getDireccion())
+                .municipio(rider.getMunicipio())
+                .provincia(rider.getProvincia())
+                .telefono(rider.getTelefono())
+                .email(rider.getEmail())
+                .activo(rider.getActivo())
                 .build();
     }
 }
