@@ -42,6 +42,11 @@ public class ZoneRiderRepositoryAdapter implements ZoneRiderRepository {
     }
 
     @Override
+    public List<UUID> findZonesByRiderId(UUID idRider) {
+        return springDataZoneRiderRepository.findIdZoneByIdRider(idRider);
+    }
+
+    @Override
     public boolean existsByZoneAndRider(UUID idZone, UUID idRider) {
         return springDataZoneRiderRepository.existsByIdZoneAndIdRider(idZone, idRider);
     }

@@ -70,6 +70,19 @@ public class ZoneQueryHandler {
                 .collect(Collectors.toList());
     }
 
+    public List<ZoneDto> getZonesByRider(UUID riderId) {
+        riderRepository.findById(riderId)
+                .orElseThrow(() -> new com.zms.gohostdeliveryservice.domain.exception.RiderNotFoundException(riderId));
+
+        List<UUID> zoneIds = zoneRiderRepository.findZonesByRiderId(riderId);
+
+        return zoneIds.stream()
+                .map(zoneRepository::findById)
+                .flatMap(Optional::stream)
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     private RiderDto toRiderDto(Rider rider) {
         return RiderDto.builder()
                 .id(rider.getId())

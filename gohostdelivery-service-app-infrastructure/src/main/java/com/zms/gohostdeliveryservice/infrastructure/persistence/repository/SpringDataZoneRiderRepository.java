@@ -15,4 +15,7 @@ public interface SpringDataZoneRiderRepository extends JpaRepository<ZoneRiderJp
     
     @Query("SELECT zr.idRider FROM ZoneRiderJpaEntity zr WHERE zr.idZone = :idZone")
     List<UUID> findIdRiderByIdZone(UUID idZone);
+
+    @Query("SELECT zr.idZone FROM ZoneRiderJpaEntity zr WHERE zr.idRider = :idRider")
+    List<UUID> findIdZoneByIdRider(UUID idRider);
 }

@@ -113,6 +113,31 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '500': { $ref: '#/components/responses/ServerError' }
 
+  /riders/{riderId}/zones:
+    get:
+      summary: Obtener las zonas asignadas a un Rider
+      operationId: getZonesByRider
+      tags: [Riders]
+      parameters:
+        - name: riderId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de zonas asignadas al Rider
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
   ###############################################################
   # RIDER DOCUMENTS (FOTO, CONTRATO, DOCUMENTO IDENTIDAD)
   ###############################################################

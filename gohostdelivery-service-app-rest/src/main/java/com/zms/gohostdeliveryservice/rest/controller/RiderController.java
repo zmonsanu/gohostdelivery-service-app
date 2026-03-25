@@ -37,6 +37,7 @@ public class RiderController {
     private final UploadRiderDocumentCommandHandler uploadRiderDocumentCommandHandler;
     private final DeleteRiderDocumentCommandHandler deleteRiderDocumentCommandHandler;
     private final RiderDocumentQueryHandler riderDocumentQueryHandler;
+    private final com.zms.gohostdeliveryservice.application.query.zone.ZoneQueryHandler zoneQueryHandler;
 
     @PostMapping
     public ResponseEntity<RiderDto> createRider(@RequestBody CreateRiderCommand command) {
@@ -59,6 +60,12 @@ public class RiderController {
     @GetMapping
     public ResponseEntity<List<RiderDto>> listRiders() {
         return ResponseEntity.ok(riderQueryHandler.listAll());
+    }
+
+    @GetMapping("/{riderId}/zones")
+    public ResponseEntity<List<com.zms.gohostdeliveryservice.application.dto.ZoneDto>> getZonesByRider(
+            @PathVariable UUID riderId) {
+        return ResponseEntity.ok(zoneQueryHandler.getZonesByRider(riderId));
     }
 
     @GetMapping("/{riderId}/documents")
