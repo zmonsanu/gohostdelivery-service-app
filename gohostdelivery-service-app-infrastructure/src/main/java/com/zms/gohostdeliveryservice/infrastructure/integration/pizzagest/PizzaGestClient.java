@@ -40,15 +40,15 @@ public class PizzaGestClient {
         try {
             String url = pizzagestUrl + "authenticateEmployee";
             Map<String, String> request = new HashMap<>();
-            request.put("User", user);
-            request.put("Pass", pass);
-            request.put("ClientCode", clientCode);
+            request.put("User", sanitize(user));
+            request.put("Pass", sanitize(pass));
+            request.put("ClientCode", sanitize(clientCode));
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
 
-            log.info("Autenticando en PizzaGest ({}) con usuario: {}", url, user);
+            log.info("Autenticando en PizzaGest ({}) con usuario: {}", url, sanitize(user));
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 JsonNode root = objectMapper.readTree(response.getBody());
@@ -67,8 +67,8 @@ public class PizzaGestClient {
         try {
             String url = pizzagestUrl + "getordersbyhubmarketplace";
             Map<String, String> request = new HashMap<>();
-            request.put("HubCode", hubCode);
-            request.put("Client", clientCode);
+            request.put("HubCode", sanitize(hubCode));
+            request.put("Client", sanitize(clientCode));
             request.put("Language", "es");
 
             HttpHeaders headers = new HttpHeaders();
@@ -76,7 +76,7 @@ public class PizzaGestClient {
             headers.set("Authorization", "Bearer " + token);
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
 
-            log.debug("Obteniendo pedidos de PizzaGest ({}) con hub-code: {}", url, hubCode);
+            log.debug("Obteniendo pedidos de PizzaGest ({}) con hub-code: {}", url, sanitize(hubCode));
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 return objectMapper.readTree(response.getBody());
@@ -85,5 +85,17 @@ public class PizzaGestClient {
             log.error("Error al obtener pedidos de PizzaGest: {}", e.getMessage(), e);
         }
         return null;
+    }
+
+    private String sanitize(String value) {
+        if (value == null) return "";
+        String trimmed = value.trim();
+        if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1);
+        }
+        if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1);
+        }
+        return trimmed.trim();
     }
 }
