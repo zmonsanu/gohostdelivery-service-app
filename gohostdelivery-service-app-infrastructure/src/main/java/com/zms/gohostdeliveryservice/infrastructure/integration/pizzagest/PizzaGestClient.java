@@ -48,6 +48,15 @@ public class PizzaGestClient {
             headers.set("Content-Type", "application/json;charset=utf-8;");
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
 
+            try {
+                String testUrl = pizzagestUrl.replace("PAV_JWT/", "hub/");
+                log.info("Probando conectividad básica a: {}", testUrl);
+                ResponseEntity<String> testRes = restTemplate.getForEntity(testUrl, String.class);
+                log.info("Respuesta de conectividad básica: {}", testRes.getStatusCode());
+            } catch (Exception testEx) {
+                log.warn("Fallo en test de conectividad básica: {}", testEx.getMessage());
+            }
+
             log.info("Autenticando en PizzaGest ({}) con usuario: '{}', ClientCode: '{}', Pass length: {}", 
                     url, sanitize(user), sanitize(clientCode), sanitize(pass) != null ? sanitize(pass).length() : 0);
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
