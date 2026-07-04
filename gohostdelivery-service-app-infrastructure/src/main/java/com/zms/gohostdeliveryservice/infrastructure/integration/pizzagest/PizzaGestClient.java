@@ -4,21 +4,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 @Component
 @Slf4j
 public class PizzaGestClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${pizzagest.url:https://tiendaonline4.pizzagest.info/PAV_JWT/}")
@@ -39,30 +39,26 @@ public class PizzaGestClient {
     public String login() {
         try {
             String url = pizzagestUrl + "authenticateEmployee";
-            Map<String, String> request = new HashMap<>();
-            request.put("User", sanitize(user));
-            request.put("Pass", sanitize(pass));
-            request.put("ClientCode", sanitize(clientCode));
+            String json = String.format("{\"User\":\"%s\",\"Pass\":\"%s\",\"ClientCode\":\"%s\"}", 
+                    sanitize(user), sanitize(pass), sanitize(clientCode));
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json;charset=utf-8;");
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
-
-            try {
-                String testUrl = pizzagestUrl.replace("PAV_JWT/", "hub/");
-                log.info("Probando conectividad básica a: {}", testUrl);
-                ResponseEntity<String> testRes = restTemplate.getForEntity(testUrl, String.class);
-                log.info("Respuesta de conectividad básica: {}", testRes.getStatusCode());
-            } catch (Exception testEx) {
-                log.warn("Fallo en test de conectividad básica: {}", testEx.getMessage());
-            }
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json;charset=utf-8;")
+                    .header("User-Agent", "Mozilla/5.0")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
 
             log.info("Autenticando en PizzaGest ({}) con usuario: '{}', ClientCode: '{}', Pass length: {}", 
                     url, sanitize(user), sanitize(clientCode), sanitize(pass) != null ? sanitize(pass).length() : 0);
-            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                JsonNode root = objectMapper.readTree(response.getBody());
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() >= 200 && response.statusCode() < 300 && response.body() != null) {
+                JsonNode root = objectMapper.readTree(response.body());
                 return root.path("response").path("token").asText();
+            } else {
+                log.error("Fallo al autenticar en PizzaGest. HTTP Status: {}, Body: {}", response.statusCode(), response.body());
             }
         } catch (Exception e) {
             log.error("Error al autenticar en PizzaGest: {}", e.getMessage(), e);
@@ -76,20 +72,24 @@ public class PizzaGestClient {
         }
         try {
             String url = pizzagestUrl + "getordersbyhubmarketplace";
-            Map<String, String> request = new HashMap<>();
-            request.put("HubCode", sanitize(hubCode));
-            request.put("Client", sanitize(clientCode));
-            request.put("Language", "es");
+            String json = String.format("{\"HubCode\":\"%s\",\"Client\":\"%s\",\"Language\":\"es\"}", 
+                    sanitize(hubCode), sanitize(clientCode));
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json;charset=utf-8;");
-            headers.set("Authorization", "Bearer " + token);
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Content-Type", "application/json;charset=utf-8;")
+                    .header("Authorization", "Bearer " + token)
+                    .header("User-Agent", "Mozilla/5.0")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
 
             log.debug("Obteniendo pedidos de PizzaGest ({}) con hub-code: {}", url, sanitize(hubCode));
-            ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                return objectMapper.readTree(response.getBody());
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() >= 200 && response.statusCode() < 300 && response.body() != null) {
+                return objectMapper.readTree(response.body());
+            } else {
+                log.error("Fallo al obtener pedidos de PizzaGest. HTTP Status: {}, Body: {}", response.statusCode(), response.body());
             }
         } catch (Exception e) {
             log.error("Error al obtener pedidos de PizzaGest: {}", e.getMessage(), e);
