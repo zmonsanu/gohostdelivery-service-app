@@ -45,10 +45,11 @@ public class PizzaGestClient {
             request.put("ClientCode", sanitize(clientCode));
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Content-Type", "application/json;charset=utf-8;");
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
 
-            log.info("Autenticando en PizzaGest ({}) con usuario: {}", url, sanitize(user));
+            log.info("Autenticando en PizzaGest ({}) con usuario: '{}', ClientCode: '{}', Pass length: {}", 
+                    url, sanitize(user), sanitize(clientCode), sanitize(pass) != null ? sanitize(pass).length() : 0);
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 JsonNode root = objectMapper.readTree(response.getBody());
@@ -72,7 +73,7 @@ public class PizzaGestClient {
             request.put("Language", "es");
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Content-Type", "application/json;charset=utf-8;");
             headers.set("Authorization", "Bearer " + token);
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(request, headers);
 
