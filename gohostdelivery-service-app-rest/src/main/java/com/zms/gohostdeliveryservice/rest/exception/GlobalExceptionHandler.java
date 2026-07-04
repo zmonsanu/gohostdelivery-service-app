@@ -31,7 +31,9 @@ public class GlobalExceptionHandler {
             CompanyNotFoundException.class,
             ZoneNotFoundException.class,
             OrderNotFoundException.class,
-            RiderDocumentNotFoundException.class
+            RiderDocumentNotFoundException.class,
+            CityNotFoundException.class,
+            StreetNotFoundException.class
     })
     public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex) {
         log.warn("Recurso no encontrado: {}", ex.getMessage());
