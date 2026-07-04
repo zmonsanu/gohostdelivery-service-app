@@ -34,3 +34,13 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     url: /openapi.yml
+
+pizzagest:
+  url: ${PIZZAGEST_URL:https://tiendaonline4.pizzagest.info/PAV_JWT/}
+  user: ${PIZZAGEST_USER:34003655}
+  pass: ${PIZZAGEST_PASS:3655}
+  client-code: ${PIZZAGEST_CLIENT_CODE:10}
+  hub-code: ${PIZZAGEST_HUB_CODE:4}
+  default-company-id: ${PIZZAGEST_DEFAULT_COMPANY_ID:}
+  scheduler:
+    enabled: ${PIZZAGEST_SCHEDULER_ENABLED:true}

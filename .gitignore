@@ -38,3 +38,6 @@ Thumbs.db
 application-local.yml
 *.env
 .env
+
+# Script de monitorización externo (excluido del repo)
+scripts/monitor_pedidos.py

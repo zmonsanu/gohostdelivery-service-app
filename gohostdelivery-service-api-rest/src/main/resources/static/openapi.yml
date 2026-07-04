@@ -1071,6 +1071,47 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+  /pizzagest/scheduler:
+    get:
+      summary: Obtener el estado de activación del planificador de PizzaGest
+      operationId: getPizzaGestSchedulerStatus
+      tags: [PizzaGest]
+      responses:
+        '200':
+          description: Estado del planificador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerStatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Activar o desactivar el planificador de PizzaGest en tiempo de ejecución
+      operationId: togglePizzaGestScheduler
+      tags: [PizzaGest]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulerStatusRequest'
+      responses:
+        '200':
+          description: Estado actualizado del planificador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
 ###############################################################
 # COMPONENTS
 ###############################################################
@@ -1594,6 +1635,22 @@ components:
       required:
         - nombre
         - idCity
+
+    SchedulerStatusResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+      required:
+        - active
+
+    SchedulerStatusRequest:
+      type: object
+      properties:
+        active:
+          type: boolean
+      required:
+        - active
 
     ###############################################################
     # RESPUESTAS GENERALES
