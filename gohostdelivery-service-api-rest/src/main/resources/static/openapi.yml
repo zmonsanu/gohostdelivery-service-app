@@ -980,6 +980,97 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+  ###############################################################
+  # STREETS
+  ###############################################################
+
+  /streets:
+    post:
+      summary: Crear una nueva calle
+      operationId: createStreet
+      tags: [Streets]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StreetCreateRequest'
+      responses:
+        '201':
+          description: Calle creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Street'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      summary: Listar calles, opcionalmente filtrando por ciudad
+      operationId: listStreets
+      tags: [Streets]
+      parameters:
+        - name: idCity
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uuid
+          description: ID de la ciudad para filtrar las calles
+      responses:
+        '200':
+          description: Lista de calles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Street'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /streets/{streetId}/associate-zone/{zoneId}:
+    post:
+      summary: Asociar una calle a una zona determinada
+      operationId: associateStreetToZone
+      tags: [Streets]
+      parameters:
+        - name: streetId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de la calle
+        - name: zoneId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID de la zona
+      responses:
+        '200':
+          description: Calle asociada a la zona correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Street'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
 ###############################################################
 # COMPONENTS
 ###############################################################
@@ -1452,6 +1543,57 @@ components:
         - nombre
         - provincia
         - comunidadAutonoma
+
+    ###############################################################
+    # STREET
+    ###############################################################
+
+    Street:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        idCity:
+          type: string
+          format: uuid
+        idZone:
+          type: string
+          format: uuid
+        numMin:
+          type: integer
+          nullable: true
+        numMax:
+          type: integer
+          nullable: true
+      required:
+        - id
+        - nombre
+        - idCity
+
+    StreetCreateRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+        idCity:
+          type: string
+          format: uuid
+        idZone:
+          type: string
+          format: uuid
+          nullable: true
+        numMin:
+          type: integer
+          nullable: true
+        numMax:
+          type: integer
+          nullable: true
+      required:
+        - nombre
+        - idCity
 
     ###############################################################
     # RESPUESTAS GENERALES
