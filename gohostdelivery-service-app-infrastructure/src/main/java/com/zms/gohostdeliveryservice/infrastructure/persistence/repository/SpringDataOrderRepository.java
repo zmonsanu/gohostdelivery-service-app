@@ -17,4 +17,6 @@ public interface SpringDataOrderRepository
     List<OrderJpaEntity> findByEstado(OrderStatus estado);
 
     boolean existsByNumeroPedido(String numeroPedido);
+
+    boolean existsByNumeroPedidoAndFechaCreacionAfter(String numeroPedido, java.time.LocalDateTime date);
 }

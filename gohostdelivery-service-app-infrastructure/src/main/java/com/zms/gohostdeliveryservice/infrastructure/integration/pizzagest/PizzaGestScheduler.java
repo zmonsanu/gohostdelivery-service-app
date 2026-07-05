@@ -100,13 +100,13 @@ public class PizzaGestScheduler implements PizzaGestSchedulerControl {
             }
 
             for (JsonNode o : orders) {
-                String numTicket = o.path("NumTicket").asText();
-                if (numTicket == null || numTicket.isBlank()) {
+                String ticketCode = o.path("TicketCode").asText();
+                if (ticketCode == null || ticketCode.isBlank()) {
                     continue;
                 }
 
-                // 1. Evitar duplicados
-                if (orderRepository.existsByNumeroPedido(numTicket)) {
+                // 1. Evitar duplicados (comprobamos en las últimas 48 horas para evitar falsos positivos con tickets de días anteriores)
+                if (orderRepository.existsByNumeroPedidoAndFechaCreacionAfter(ticketCode, LocalDateTime.now().minusDays(2))) {
                     continue;
                 }
 
@@ -144,13 +144,13 @@ public class PizzaGestScheduler implements PizzaGestSchedulerControl {
                         matchedCompanyId = resolveFirstCompanyFallback();
                         if (matchedCompanyId != null) {
                             log.warn("Pedido {} de PizzaGest no pudo asociarse por zona ni por nombre de sucursal ({}). " +
-                                            "Asignando a la primera compañía en BD por defecto: {}", 
-                                    numTicket, branchName, matchedCompanyId);
+                                             "Asignando a la primera compañía en BD por defecto: {}", 
+                                    ticketCode, branchName, matchedCompanyId);
                         }
                     }
 
                     if (matchedCompanyId == null) {
-                        log.error("No se pudo asociar el pedido {} de PizzaGest a ninguna compañía en la base de datos. Saltando pedido.", numTicket);
+                        log.error("No se pudo asociar el pedido {} de PizzaGest a ninguna compañía en la base de datos. Saltando pedido.", ticketCode);
                         continue;
                     }
 
@@ -161,7 +161,7 @@ public class PizzaGestScheduler implements PizzaGestSchedulerControl {
 
                     Order order = Order.builder()
                             .idPedido(UUID.randomUUID())
-                            .numeroPedido(numTicket)
+                            .numeroPedido(ticketCode)
                             .idCompany(matchedCompanyId)
                             .idZone(matchedZoneId)
                             .estado(OrderStatus.RECIBIDO)
@@ -173,14 +173,14 @@ public class PizzaGestScheduler implements PizzaGestSchedulerControl {
 
                     Order saved = orderRepository.save(order);
                     log.info("Pedido de PizzaGest {} importado con éxito. Compañía asignada: {}, Zona: {}", 
-                            numTicket, matchedCompanyId, matchedZoneId);
+                            ticketCode, matchedCompanyId, matchedZoneId);
 
                     // 4. Publicar evento para colas y notificaciones
                     orderEventPublisher.publishOrderCreated(saved);
                     importedCount++;
 
                 } catch (Exception e) {
-                    log.error("Error al procesar el pedido {} de PizzaGest: {}", numTicket, e.getMessage(), e);
+                    log.error("Error al procesar el pedido {} de PizzaGest: {}", ticketCode, e.getMessage(), e);
                 }
             }
         }

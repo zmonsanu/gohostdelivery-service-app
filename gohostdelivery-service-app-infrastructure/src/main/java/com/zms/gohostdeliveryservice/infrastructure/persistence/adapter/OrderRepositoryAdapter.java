@@ -72,6 +72,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
     }
 
     @Override
+    public boolean existsByNumeroPedidoAndFechaCreacionAfter(String numeroPedido, java.time.LocalDateTime date) {
+        return springDataOrderRepository.existsByNumeroPedidoAndFechaCreacionAfter(numeroPedido, date);
+    }
+
+    @Override
     public List<Order> findByFilters(UUID idCompany, UUID idRider, UUID idZone, OrderStatus estado,
             java.time.LocalDateTime fechaDesde, java.time.LocalDateTime fechaHasta) {
         org.springframework.data.jpa.domain.Specification<OrderJpaEntity> spec = (root, query, cb) -> {

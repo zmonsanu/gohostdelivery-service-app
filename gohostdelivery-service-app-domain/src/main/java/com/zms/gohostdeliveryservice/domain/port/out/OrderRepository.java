@@ -24,4 +24,6 @@ public interface OrderRepository {
             java.time.LocalDateTime fechaDesde, java.time.LocalDateTime fechaHasta);
 
     boolean existsByNumeroPedido(String numeroPedido);
+
+    boolean existsByNumeroPedidoAndFechaCreacionAfter(String numeroPedido, java.time.LocalDateTime date);
 }

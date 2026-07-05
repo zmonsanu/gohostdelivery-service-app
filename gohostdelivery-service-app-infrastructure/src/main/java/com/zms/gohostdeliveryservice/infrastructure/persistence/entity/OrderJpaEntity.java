@@ -23,7 +23,7 @@ public class OrderJpaEntity {
     @Column(name = "id_pedido", columnDefinition = "UUID")
     private UUID idPedido;
 
-    @Column(name = "numero_pedido", nullable = false, unique = true)
+    @Column(name = "numero_pedido", nullable = false)
     private String numeroPedido;
 
     @Column(name = "id_company", nullable = false, columnDefinition = "UUID")
