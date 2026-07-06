@@ -839,6 +839,31 @@
 
         .toast-icon.success { color: var(--accent-green); }
         .toast-icon.error { color: var(--accent-red); }
+
+        .btn-sort {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-sort:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #c084fc;
+        }
+
+        .btn-sort:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -934,7 +959,12 @@
                     <i class="fa-solid fa-list-check"></i>
                     <span>Cola de Pedidos</span>
                 </div>
-                <span id="orders-count" class="badge-count">0</span>
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                    <button id="btn-sort-orders" class="btn-sort" onclick="toggleOrderSort()" title="Ordenar: Más recientes primero">
+                        <i class="fa-solid fa-arrow-down-9-1"></i>
+                    </button>
+                    <span id="orders-count" class="badge-count">0</span>
+                </div>
             </div>
             
             <!-- Statistics Cards -->
@@ -1007,6 +1037,8 @@
         
         let secondsToRefresh = 10;
         let timerInterval = null;
+        
+        let orderSortDirection = 'desc'; // 'desc' (más recientes primero) o 'asc' (más antiguos primero)
 
         // Inicialización
         window.addEventListener('DOMContentLoaded', async () => {
@@ -1378,7 +1410,14 @@
                 return;
             }
 
-            container.innerHTML = orders.map(o => {
+            // Ordenar pedidos según la dirección seleccionada
+            const sortedOrders = [...orders].sort((a, b) => {
+                const dateA = a.fechaCreacion ? new Date(a.fechaCreacion) : new Date(0);
+                const dateB = b.fechaCreacion ? new Date(b.fechaCreacion) : new Date(0);
+                return orderSortDirection === 'desc' ? dateB - dateA : dateA - dateB;
+            });
+
+            container.innerHTML = sortedOrders.map(o => {
                 // Obtener nombres mapeados
                 const companyName = getCompanyName(o.idCompany);
                 const zoneName = getZoneName(o.idZone);
@@ -1522,14 +1561,12 @@
             const rider = riders.find(r => r.id === id);
             if (rider) return `${rider.nombre} ${rider.apellido || ''}`;
             
-            // Si no está cargado en la lista de esta ciudad, cargarlo o mostrar Cargando
             return 'Repartidor Asignado';
         }
 
         function formatDateTime(dateStr) {
             if (!dateStr) return '';
             try {
-                // Espera formato ISO (e.g. 2026-07-06T18:30:00)
                 const parts = dateStr.split('T');
                 if (parts.length > 1) {
                     const timePart = parts[1].substring(0, 5); // HH:MM
@@ -1539,6 +1576,21 @@
             } catch (e) {
                 return dateStr;
             }
+        }
+
+        function toggleOrderSort() {
+            orderSortDirection = orderSortDirection === 'desc' ? 'asc' : 'desc';
+            const btn = document.getElementById('btn-sort-orders');
+            if (orderSortDirection === 'desc') {
+                btn.innerHTML = '<i class="fa-solid fa-arrow-down-9-1"></i>';
+                btn.title = "Ordenar: Más recientes primero";
+                showToast("Ordenando: Más recientes primero", "success");
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-arrow-up-1-9"></i>';
+                btn.title = "Ordenar: Más antiguos primero";
+                showToast("Ordenando: Más antiguos primero", "success");
+            }
+            renderOrders();
         }
 
         function showLoading(show) {
