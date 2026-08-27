@@ -46,6 +46,13 @@ public class RiderRepositoryAdapter implements RiderRepository {
         return springDataRiderRepository.existsByEmail(email);
     }
 
+    @Override
+    public List<Rider> findByCityId(UUID cityId) {
+        return springDataRiderRepository.findRidersByCityId(cityId).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     private RiderJpaEntity toEntity(Rider rider) {
         return RiderJpaEntity.builder()
                 .id(rider.getId())

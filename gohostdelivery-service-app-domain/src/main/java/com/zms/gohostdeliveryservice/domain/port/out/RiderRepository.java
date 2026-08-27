@@ -16,4 +16,6 @@ public interface RiderRepository {
     void deleteById(UUID id);
 
     boolean existsByEmail(String email);
+
+    List<Rider> findByCityId(UUID cityId);
 }

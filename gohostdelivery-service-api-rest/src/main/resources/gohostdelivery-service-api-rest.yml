@@ -980,7 +980,33 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+  /cities/{cityId}/riders:
+    get:
+      summary: Obtener los riders asociados a una ciudad (vía sus zonas)
+      operationId: getRidersByCity
+      tags: [Cities]
+      parameters:
+        - name: cityId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de riders asociados a las zonas de la ciudad
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Rider'
+        '404': { $ref: '#/components/responses/NotFound' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '500': { $ref: '#/components/responses/ServerError' }
+
 ###############################################################
+
 # COMPONENTS
 ###############################################################
 
