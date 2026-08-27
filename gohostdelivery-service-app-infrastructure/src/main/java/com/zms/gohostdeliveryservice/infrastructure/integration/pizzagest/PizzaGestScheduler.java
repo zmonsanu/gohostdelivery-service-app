@@ -101,6 +101,20 @@ public class PizzaGestScheduler implements PizzaGestSchedulerControl {
 
             for (JsonNode o : orders) {
                 String ticketCode = o.path("TicketCode").asText();
+                if (ticketCode == null || ticketCode.isBlank() || "null".equalsIgnoreCase(ticketCode)) {
+                    String numTicket = o.path("NumTicket").asText();
+                    if (numTicket != null && !numTicket.isBlank() && !"null".equalsIgnoreCase(numTicket)) {
+                        ticketCode = numTicket;
+                    } else {
+                        String orderCode = o.path("OrderCode").asText();
+                        if (orderCode != null && !orderCode.isBlank() && !"null".equalsIgnoreCase(orderCode)) {
+                            ticketCode = orderCode;
+                        } else {
+                            ticketCode = "";
+                        }
+                    }
+                }
+
                 if (ticketCode == null || ticketCode.isBlank()) {
                     continue;
                 }
