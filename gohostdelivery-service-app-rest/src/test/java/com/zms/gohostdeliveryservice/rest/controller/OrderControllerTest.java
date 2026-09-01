@@ -175,7 +175,8 @@ class OrderControllerTest {
                                 .pagado(false)
                                 .build();
 
-                when(orderQueryHandler.listByEstado(OrderStatus.RECIBIDO)).thenReturn(List.of(dto));
+                when(orderQueryHandler.listByFilters(any(), any(), any(), eq(OrderStatus.RECIBIDO), any(), any()))
+                                .thenReturn(List.of(dto));
 
                 mockMvc.perform(get("/orders").param("estado", "RECIBIDO"))
                                 .andExpect(status().isOk())

@@ -18,3 +18,7 @@ logging:
   level:
     com.zms.gohostdeliveryservice: DEBUG
     org.springframework.kafka: INFO
+
+pizzagest:
+  user: YOUR_PIZZAGEST_USER
+  pass: YOUR_PIZZAGEST_PASSWORD

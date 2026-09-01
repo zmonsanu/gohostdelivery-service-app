@@ -27,7 +27,7 @@ public class PizzaGestClient {
     @Value("${pizzagest.user:34003655}")
     private String user;
 
-    @Value("${pizzagest.pass:3655}")
+    @Value("${pizzagest.pass:}")
     private String pass;
 
     @Value("${pizzagest.client-code:10}")

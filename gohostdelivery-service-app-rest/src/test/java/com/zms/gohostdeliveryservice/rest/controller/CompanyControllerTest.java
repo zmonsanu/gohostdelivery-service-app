@@ -3,6 +3,7 @@ package com.zms.gohostdeliveryservice.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zms.gohostdeliveryservice.application.command.company.CreateCompanyCommand;
 import com.zms.gohostdeliveryservice.application.command.company.CreateCompanyCommandHandler;
+import com.zms.gohostdeliveryservice.application.command.company.PartialUpdateCompanyCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.preference.AddRiderPreferenceCommandHandler;
 import com.zms.gohostdeliveryservice.application.command.preference.RemoveRiderPreferenceCommandHandler;
 import com.zms.gohostdeliveryservice.application.dto.CompanyDto;
@@ -37,6 +38,9 @@ class CompanyControllerTest {
 
         @MockitoBean
         private CreateCompanyCommandHandler createCompanyCommandHandler;
+
+        @MockitoBean
+        private PartialUpdateCompanyCommandHandler partialUpdateCompanyCommandHandler;
 
         @MockitoBean
         private CompanyQueryHandler companyQueryHandler;
